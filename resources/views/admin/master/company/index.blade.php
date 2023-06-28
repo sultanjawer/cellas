@@ -69,28 +69,10 @@
 				"<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
 			buttons: [
 				{
-					extend: 'pdfHtml5',
-					text: '<i class="fa fa-file-pdf"></i>',
-					titleAttr: 'Generate PDF',
-					className: 'btn-outline-danger btn-sm btn-icon mr-1'
-				},
-				{
 					extend: 'excelHtml5',
 					text: '<i class="fa fa-file-excel"></i>',
 					titleAttr: 'Generate Excel',
 					className: 'btn-outline-success btn-sm btn-icon mr-1'
-				},
-				{
-					extend: 'csvHtml5',
-					text: '<i class="fal fa-file-csv"></i>',
-					titleAttr: 'Generate CSV',
-					className: 'btn-outline-primary btn-sm btn-icon mr-1'
-				},
-				{
-					extend: 'copyHtml5',
-					text: '<i class="fa fa-copy"></i>',
-					titleAttr: 'Copy to clipboard',
-					className: 'btn-outline-primary btn-sm btn-icon mr-1'
 				},
 				{
 					extend: 'print',

@@ -71,7 +71,7 @@
 			@can('transaction_access')
 				<li class="nav-title">Transaction</li>
 				@can('order_access')
-					<li class="c-sidebar-nav-item {{ request()->is('admin/orders*') ? 'active' : '' }}">
+					<li class="c-sidebar-nav-item {{ request()->is('admin/order*') ? 'active' : '' }}">
 						<a href=""
 							data-filter-tags="transaction orders">
 							<i class="fa-fw fal fa-receipt c-sidebar-nav-icon">
@@ -81,7 +81,7 @@
 					</li>
 				@endcan
 				@can('payment_access')
-					<li class="c-sidebar-nav-item {{ request()->is('admin/orders*') ? 'active' : '' }}">
+					<li class="c-sidebar-nav-item {{ request()->is('admin/payment*') ? 'active' : '' }}">
 						<a href="{{route('admin.payments.index')}}" data-filter-tags="transaction payments deposits cash in out">
 							<i class="fa-fw fal fa-cash-register c-sidebar-nav-icon">
 							</i>

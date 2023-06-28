@@ -58,7 +58,7 @@
 						</div>
 						<div class="form-group col-md-6">
 							<label for="selectBankPayment">Designated Bank</label>
-							<select class="form-control" id="selectBankPayment" name="bank_id">
+							<select class="form-control" id="selectBankPayment" name="recipient_bank">
 								<option value=""></option>
 								@foreach ($banks as $bank)
 									<option value="{{$bank->id}}">{{$bank->bank_name}}, {{$bank->account}} - {{$bank->acc_name}}</option>
@@ -70,9 +70,7 @@
 				</div>
 				<div class="modal-footer card-header">
 					<button type="button" class="btn btn-default waves-effect waves-themed" data-dismiss="modal">Close</button>
-					@can('user_management_access')
 					<button type="submit" class="btn btn-primary waves-effect waves-themed">Save</button>
-					@endcan
 				</div>
 			</form>
 		</div>

@@ -43,13 +43,25 @@
 								<input type="number" step="0.01" name="amount" id="amount" class="form-control" placeholder="amount" aria-describedby="helpId" value="{{old('amount', $payment->amount)}}"  required>
 								<small id="helpId" class="text-muted">The amount of money transfered.</small>
 							</div>
-							<div class="form-group col-md-12">
+							<div class="form-group col-md-6">
+								<label for="selectCompanyCreate">Designated Company</label>
+								<select class="form-control" id="selectCompanyCreate" name="company_id">
+									<option value=""></option>
+									@foreach ($companies as $company)
+										<option value="{{$company->id}}" {{ old('company_id', $payment->company_id) == $company->id ? 'selected' : '' }}>
+											{{$company->company_name}}
+										</option>
+									@endforeach
+								</select>
+								<small id="helpId" class="text-muted">The designated Company for this payment or deposit.</small>
+							</div>
+							<div class="form-group col-md-6">
 								<label for="select2Bank">Designated Bank</label>
-								<select class="form-control" id="select2Bank" name="bank_id">
+								<select class="form-control" id="select2Bank" name="recipient_bank">
 									<option value=""></option>
 									@foreach ($banks as $bank)
-										<option value="{{ $bank->id }}" {{ old('bank_id', $payment->bank_id) == $bank->id ? 'selected' : '' }}>
-											{{$bank->bank}}, {{$bank->account}} - {{$bank->acc_name}}
+										<option value="{{ $bank->id }}" {{ old('recipient_bank', $payment->recipient_bank) == $bank->id ? 'selected' : '' }}>
+											{{$bank->bank_name}}, {{$bank->account}} - {{$bank->acc_name}}
 										</option>
 									@endforeach
 								</select>
@@ -61,9 +73,9 @@
 						<div class="d-flex justify-content-between align-itmes-center">
 							<div><span class="text-danger">*</span> Required</div>
 							<div>
-								<button type="button" class="btn btn-secondary waves-effect waves-themed" data-dismiss="modal">Close</button>
+								<a href="{{route('admin.payments.index')}}" type="button" class="btn btn-default btn-sm waves-effect waves-themed">Back</a>
 								@can('user_management_access')
-									<button type="submit" class="btn btn-primary waves-effect waves-themed">Save changes</button>
+									<button type="submit" class="btn btn-primary btn-sm waves-effect waves-themed">Save changes</button>
 								@endcan
 							</div>
 						</div>
@@ -78,5 +90,17 @@
 {{-- script section --}}
 @section('scripts')
 @parent
-
+<script>
+	$(document).ready(function() {
+		$("#select2Customer").select2({
+			placeholder: "-- Select Customer --",
+		});
+		$("#select2Bank").select2({
+			placeholder: "-- Select Bank --",
+		});
+		$("#selectCompanyCreate").select2({
+			placeholder: "-- Select Company --",
+		});
+	});
+</script>
 @endsection

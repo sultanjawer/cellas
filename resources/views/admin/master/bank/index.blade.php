@@ -75,12 +75,6 @@
 				"<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
 			buttons: [
 				{
-					extend: 'pdfHtml5',
-					text: '<i class="fa fa-file-pdf"></i>',
-					titleAttr: 'Generate PDF',
-					className: 'btn-outline-danger btn-sm btn-icon mr-1'
-				},
-				{
 					extend: 'excelHtml5',
 					text: '<i class="fa fa-file-excel"></i>',
 					titleAttr: 'Generate Excel',

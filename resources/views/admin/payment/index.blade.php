@@ -23,7 +23,7 @@
 								<label for="" class="col-form-label form-label">Company Filter</label>
 									<select name="Company_Filter" id="Company_Filter" class="mr-2 form-control dataFilter">
 										<option value=""></option>
-										<option >All Company</option>
+										<option value="all">All Company</option>
 										@foreach ($companies as $company)
 											<option value="{{$company->id}}">{{$company->company_name}}</option>
 										@endforeach
@@ -36,7 +36,7 @@
 								<label for="" class="col-form-label form-label">Account Filter</label>
 									<select name="Account_Filter" id="Account_Filter" class="mr-2 form-control dataFilter">
 										<option value=""></option>
-										<option >All Account</option>
+										<option value="all">All Account</option>
 										@foreach ($banks as $bank)
 											<option value="{{$bank->id}}">{{$bank->acc_name}}, {{$bank->account}}</option>
 										@endforeach
@@ -48,10 +48,10 @@
 							<div class="form-group">
 								<label for="" class="col-form-label form-label">Status Filter</label>
 									<select name="filter_status" id="filter_status" class="mr-2 form-control dataFilter">
-										<option value="">All Status</option>
-										<option >All Status</option>
-										<option value="0">Unchecked</option>
-										<option value="1">Checked</option>
+										<option value=""></option>
+										<option value="all">All Status</option>
+										<option value="unchecked">Unchecked</option>
+										<option value="checked">Checked</option>
 									</select>
 								<label for="" class="help-block">Filter status.</label>
 							</div>
@@ -61,7 +61,7 @@
 								<label for="" class="col-form-label form-label">Validation Filter</label>
 									<select name="validation_Filter" id="validation_Filter" class="mr-2 form-control dataFilter">
 										<option value=""></option>
-										<option >All State</option>
+										<option value="all">All State</option>
 										<option value="0">Not Validate</option>
 										<option value="1">Validated</option>
 									</select>
@@ -199,8 +199,8 @@
 							<form action="{{ route("admin.payment.setStatus", ":paymentId") }}" method="post">
 								@csrf
 								@method("put")
-								<button type="submit" class="btn btn-xs btn-icon ${payment.status === '1' ? 'btn-success' : 'btn-danger'}">
-									<i class="fal ${payment.status === '1' ? 'fa-check' : 'fa-upload'}"></i>
+								<button type="submit" class="btn btn-xs btn-icon ${payment.status === 'checked' ? 'btn-success' : 'btn-default'}">
+									<i class="fal ${payment.status === 'checked' ? 'fa-check' : 'fa-upload'}"></i>
 								</button>
 								<span hidden>${payment.status}</span>
 							</form>
@@ -249,16 +249,24 @@
 		var filterValid = $('#validation_Filter').val();
 		updatepaymentsTable(startDate, filterCompany, filterAccount, filterStatus, filterValid);
 
-		// Fetch and update orders data when the date range changes
+		// Fetch and update status data when the datafilter changes
 		$('.dataFilter').on('change', function() {
 			var startDate = $('#start_date').val();
 			var filterCompany = $('#Company_Filter').val();
-		var filterAccount = $('#Account_Filter').val();
-		var filterStatus = $('#filter_status').val();
-		var filterValid = $('#validation_Filter').val();
-			// Convert empty string value to null for proper filtering
-			if (filterStatus === '') {
-				filterStatus = null;
+			var filterAccount = $('#Account_Filter').val();
+			var filterStatus = $('#filter_status').val();
+			var filterValid = $('#validation_Filter').val();
+			if (filterAccount === 'all') {
+				filterAccount = '';
+			}
+			if (filterCompany === 'all') {
+				filterCompany = '';
+			}
+			if (filterStatus === 'all') {
+				filterStatus = '';
+			}
+			if (filterValid === 'all') {
+				filterValid = '';
 			}
 			updatepaymentsTable(startDate, filterCompany, filterAccount, filterStatus, filterValid);
 		});

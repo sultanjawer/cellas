@@ -29,8 +29,8 @@
 					</div>
 				</div>
 				<div class="modal-footer card-header">
-					<button type="button" class="btn btn-secondary waves-effect waves-themed" data-dismiss="modal">Close</button>
-					<button type="submit" class="btn btn-primary waves-effect waves-themed">Save</button>
+					<button type="button" class="btn btn-default btn-sm waves-effect waves-themed" data-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary btn-sm waves-effect waves-themed">Save</button>
 				</div>
 			</form>
 		</div>

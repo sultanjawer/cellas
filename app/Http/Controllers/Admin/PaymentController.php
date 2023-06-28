@@ -33,9 +33,9 @@ class PaymentController extends Controller
 		$banks = Bank::select('id', 'bank_name', 'account', 'acc_name')->get();
 
 		$payments = Payment::all();
-		$checkedPayments = Payment::where('status', '1')->sum('amount');
+		// $checkedPayments = Payment::where('status', '1')->sum('amount');
 
-		return view('admin.payment.index', compact('module_name', 'page_title', 'page_subtitle', 'page_heading', 'heading_class', 'page_desc', 'payments', 'customers', 'currencies', 'banks', 'checkedPayments', 'companies'));
+		return view('admin.payment.index', compact('module_name', 'page_title', 'page_subtitle', 'page_heading', 'heading_class', 'page_desc', 'payments', 'customers', 'currencies', 'banks', 'companies'));
 	}
 
 	/**
@@ -59,7 +59,8 @@ class PaymentController extends Controller
 		$payment = new Payment();
 
 		$payment->customer_id = $request->input('customer_id');
-		$payment->bank_id = $request->input('bank_id');
+		$payment->company_id = $request->input('company_id');
+		$payment->recipient_bank = $request->input('recipient_bank');
 		$payment->origin_bank = $request->input('origin_bank');
 		$payment->origin_account = $request->input('origin_account');
 		$payment->slip_date = $request->input('slip_date');
@@ -97,10 +98,12 @@ class PaymentController extends Controller
 		$page_desc = 'Customer Deposits and Payments';
 
 		$payment = Payment::find($id);
-		$customers = Customer::all();
-		$banks = Bank::all();
+		$customers = Customer::select('id', 'name')->get();
+		$currencies = Product::select('id', 'symbol', 'currency')->get();
+		$companies = Companies::all();
+		$banks = Bank::select('id', 'bank_name', 'account', 'acc_name')->get();
 
-		return view('admin.payment.edit', compact('module_name', 'page_title', 'page_subtitle', 'page_heading', 'heading_class', 'page_desc', 'payment', 'customers', 'banks'));
+		return view('admin.payment.edit', compact('module_name', 'page_title', 'page_subtitle', 'page_heading', 'heading_class', 'page_desc', 'payment', 'customers', 'banks', 'payment', 'companies', 'currencies'));
 	}
 
 	/**
@@ -115,7 +118,8 @@ class PaymentController extends Controller
 		$payment = Payment::find($id);
 
 		$payment->customer_id = $request->input('customer_id');
-		$payment->bank_id = $request->input('bank_id');
+		$payment->company_id = $request->input('company_id');
+		$payment->recipient_bank = $request->input('recipient_bank');
 		$payment->origin_bank = $request->input('origin_bank');
 		$payment->origin_account = $request->input('origin_account');
 		$payment->slip_date = $request->input('slip_date');
@@ -134,7 +138,7 @@ class PaymentController extends Controller
 		$oldStatus = $payment->status;
 
 		// Set the new status value based on the old value
-		$newStatus = ($oldStatus == 0) ? 1 : 0;
+		$newStatus = ($oldStatus == 'unchecked') ? 'checked' : 'unchecked';
 
 		// Update the status field
 		$payment->status = $newStatus;

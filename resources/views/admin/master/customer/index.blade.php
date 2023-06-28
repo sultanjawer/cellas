@@ -49,48 +49,7 @@
 												</form>
 											</div>
 										</td>
-										<div class="modal fade" id="editCustomer{{$customer->id}}" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
-											<div class="modal-dialog modal-dialog-centered" role="document">
-												<div class="modal-content">
-													<div class="modal-header">
-														<h4 class="modal-title">
-															Edit Customer
-															<small class="m-0 text-muted">
-																Edit current customer.
-															</small>
-														</h4>
-														<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-															<span aria-hidden="true"><i class="fal fa-times"></i></span>
-														</button>
-													</div>
-													<form action="{{route('admin.master.customer.update', $customer->id)}}" method="post">
-														@csrf
-														@method('put')
-														<div class="modal-body">
-															<div class="form-group">
-																<label for="">Customer Name</label>
-																<input type="text" name="name" id="name" class="form-control" placeholder="currency symbol" aria-describedby="helpId" value="{{old('name', $customer->name)}}">
-																<small id="helpId" class="text-muted">Customer Name</small>
-															</div>
-															<div class="form-group">
-																<label for="">Phone Contact</label>
-																<input type="text" name="mobile_phone" id="mobile_phone" class="form-control" placeholder="currency symbol" aria-describedby="helpId" value="{{old('mobile_phone', $customer->mobile_phone)}}">
-																<small id="helpId" class="text-muted">Phone contact number</small>
-															</div>
-															<div class="form-group">
-																<label for="">Customer Notes</label>
-																<textarea class="form-control" id="notes" name="notes" rows="4">{{old('notes', $customer->notes)}}</textarea>
-																<small id="helpId" class="text-muted">Notes for this customer</small>
-															</div>
-														</div>
-														<div class="modal-footer">
-															<button type="button" class="btn btn-secondary waves-effect waves-themed" data-dismiss="modal">Close</button>
-															<button type="submit" class="btn btn-primary waves-effect waves-themed">Save changes</button>
-														</div>
-													</form>
-												</div>
-											</div>
-										</div>
+										@include('admin.master.customer.modalEdit')
 									</tr>
 								@endforeach
 							</tbody>
@@ -100,47 +59,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="modal fade" id="newCustomer" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title">
-						New Customer
-						<small class="m-0 text-muted">
-							Add new Customer.
-						</small>
-					</h4>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true"><i class="fal fa-times"></i></span>
-					</button>
-				</div>
-				<form action="{{route('admin.master.customer.store')}}" method="post">
-					@csrf
-					<div class="modal-body">
-						<div class="form-group">
-							<label for="">Customer Name</label>
-							<input type="text" name="name" id="name" class="form-control" placeholder="customer name" aria-describedby="helpId">
-							<small id="helpId" class="text-muted">Customer Name</small>
-						</div>
-						<div class="form-group">
-							<label for="">Phone Contact</label>
-							<input type="text" name="mobile_phone" id="mobile_phone" class="form-control" placeholder="mobile phone number" aria-describedby="helpId">
-							<small id="helpId" class="text-muted">Phone contact number</small>
-						</div>
-						<div class="form-group">
-							<label for="">Customer Notes</label>
-							<textarea class="form-control" id="notes" name="notes" rows="4"></textarea>
-							<small id="helpId" class="text-muted">Notes for this customer</small>
-						</div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary waves-effect waves-themed" data-dismiss="modal">Close</button>
-						<button type="submit" class="btn btn-primary waves-effect waves-themed">Save changes</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
+	@include('admin.master.customer.modalCreate')
 
 @endsection
 
@@ -160,28 +79,10 @@
 				"<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
 			buttons: [
 				{
-					extend: 'pdfHtml5',
-					text: '<i class="fa fa-file-pdf"></i>',
-					titleAttr: 'Generate PDF',
-					className: 'btn-outline-danger btn-sm btn-icon mr-1'
-				},
-				{
 					extend: 'excelHtml5',
 					text: '<i class="fa fa-file-excel"></i>',
 					titleAttr: 'Generate Excel',
 					className: 'btn-outline-success btn-sm btn-icon mr-1'
-				},
-				{
-					extend: 'csvHtml5',
-					text: '<i class="fal fa-file-csv"></i>',
-					titleAttr: 'Generate CSV',
-					className: 'btn-outline-primary btn-sm btn-icon mr-1'
-				},
-				{
-					extend: 'copyHtml5',
-					text: '<i class="fa fa-copy"></i>',
-					titleAttr: 'Copy to clipboard',
-					className: 'btn-outline-primary btn-sm btn-icon mr-1'
 				},
 				{
 					extend: 'print',
