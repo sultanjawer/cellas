@@ -4,7 +4,6 @@
 @section('content')
 	@include('partials.subheader')
 	@include('partials.sysalert')
-
 	<div class="row">
 		<div class="col">
 			<div class="panel" id="productsPanel">

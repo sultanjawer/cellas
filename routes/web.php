@@ -8,9 +8,9 @@ Route::get('/', function () {
 	return redirect()->route('login');
 });
 
-Route::get('/v2/register', function () {
-	return view('v2register');
-});
+// Route::get('/v2/register', function () {
+// 	return view('v2register');
+// });
 
 Route::get('/home', function () {
 	if (session('status')) {
@@ -75,8 +75,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 	Route::get('messenger/{topic}/reply', 'MessengerController@showReply')->name('messenger.showReply');
 
 	//verifikasi
-	Route::get('dir_check_b', 'MessengerController@showReply')->name('verifikasi.dir_check_b');
-	Route::get('dir_check_c', 'MessengerController@showReply')->name('verifikasi.dir_check_c');
+	// Route::get('dir_check_b', 'MessengerController@showReply')->name('verifikasi.dir_check_b');
+	// Route::get('dir_check_c', 'MessengerController@showReply')->name('verifikasi.dir_check_c');
 
 	//master products
 	Route::get('master/products', 'ProductController@index')->name('master.products.index');

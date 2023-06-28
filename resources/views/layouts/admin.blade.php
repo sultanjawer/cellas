@@ -3,7 +3,7 @@
 	@include('partials.head')
 
 	<body class="mod-bg-2 mod-nav-link blur">  {{-- mod-skin-dark --}}
-		<script src="{{ asset('js/smartadmin/pagesetting.js') }}"></script>
+		<script src="{{ asset('js/pagesetting.js') }}"></script>
 		<!-- begin page wrapper -->
 		<div class="page-wrapper">
             <div class="page-inner">
@@ -64,7 +64,7 @@
 		@include('partials.quickmenu')
 		<!-- END Quick Menu -->
 		<!-- BEGIN Page Settings -->
-		{{-- @include('partials.pagesettings') --}}
+		@include('partials.pagesettings')
 
 		<script src="{{asset('js/vendors.bundle.js')}}"></script>
 		<script src="{{asset('js/app.bundle.js')}}"></script>

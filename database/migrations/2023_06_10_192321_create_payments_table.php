@@ -23,7 +23,7 @@ return new class extends Migration
 			$table->integer('recipient_bank')->nullable();
 			$table->date('slip_date')->nullable();
 			$table->string('attachment')->nullable();
-			$table->string('status')->nullable();
+			$table->enum('status', [0, 1])->default(0)->nullable();
 			$table->enum('validation', [0, 1])->default(0)->nullable();
 			$table->timestamps();
 			$table->softDeletes();

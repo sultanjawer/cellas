@@ -64,7 +64,7 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary waves-effect waves-themed" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-default waves-effect waves-themed" data-dismiss="modal">Close</button>
 					@can('user_management_access')
 					<button type="submit" class="btn btn-primary waves-effect waves-themed">Save changes</button>
 					@endcan
