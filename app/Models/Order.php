@@ -22,10 +22,14 @@ class Order extends Model
 	protected $fillable = [
 		'customer_id',
 		'product_id',
+		'company_id',
 		'amount',
 		'buy',
 		'sell',
-		'charges',
+		'pcharges',
+		'ccharges',
+		'pfa',
+		'cfa',
 	];
 
 	public function customer()
@@ -35,11 +39,16 @@ class Order extends Model
 
 	public function product()
 	{
-		return $this->belongsTo(Product::class, 'product_id');
+		return $this->belongsTo(Product::class, 'product_id', 'id');
 	}
 
 	public function bank()
 	{
 		return $this->belongsTo(Bank::class, 'bank_id');
+	}
+
+	public function designateBanks()
+	{
+		return $this->hasMany(DesignateBank::class, 'order_id');
 	}
 }

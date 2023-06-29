@@ -146,12 +146,24 @@ class PaymentController extends Controller
 		$payment->save();
 
 		// Set the success message based on the new status
-		$message = ($newStatus == 1) ? 'Status updated to submitted.' : 'Status updated to unsubmmited.';
-
-		return redirect()->back()->with('success', $message);
+		$message = ($newStatus == 'checked') ? 'Status updated to CHECKED.' : 'Status updated to UNCHECKED.';
+		session()->flash('message', $message);
+		return redirect()->back();
 	}
 
+	public function setValidation($id)
+	{
+		$payment = Payment::find($id);
+		// dd($payment);
+		$oldVal = $payment->validation;
+		$newVal = ($oldVal == 'unvalidated') ? 'validated' : 'unvalidated';
+		$payment->validation = $newVal;
+		$payment->save();
 
+		$message = ($newVal == 'validated') ? 'Validation updated to VALIDATED.' : 'Validation updated to UNVALIDATED.';
+		session()->flash('message', $message);
+		return redirect()->back();
+	}
 
 	/**
 	 * Remove the specified resource from storage.

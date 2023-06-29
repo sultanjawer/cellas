@@ -28,7 +28,7 @@ class ProductController extends Controller
 
 		$products = Product::all();
 
-		return view('admin.master.product.index', compact('module_name', 'page_title', 'page_heading', 'heading_class', 'products' . 'page_subtitle', 'page_desc'));
+		return view('admin.master.product.index', compact('module_name', 'page_title', 'page_heading', 'heading_class', 'products', 'page_subtitle', 'page_desc'));
 	}
 
 	/**

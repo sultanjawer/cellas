@@ -23,8 +23,8 @@ return new class extends Migration
 			$table->integer('recipient_bank')->nullable();
 			$table->date('slip_date')->nullable();
 			$table->string('attachment')->nullable();
-			$table->enum('status', [0, 1])->default(0)->nullable();
-			$table->enum('validation', [0, 1])->default(0)->nullable();
+			$table->enum('status', ['unchecked', 'checked'])->default('unchecked')->nullable();
+			$table->enum('validation', ['unvalidated', 'validated'])->default('unvalidated')->nullable();
 			$table->timestamps();
 			$table->softDeletes();
 		});

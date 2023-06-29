@@ -24,4 +24,9 @@ class Product extends Model
 		'updated_at',
 		'deleted_at',
 	];
+
+	public function order()
+	{
+		return $this->hasMany(Order::class, 'product_id', 'id');
+	}
 }

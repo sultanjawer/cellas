@@ -4,7 +4,7 @@
 @section('content')
 	@include('partials.subheader')
 	@include('partials.sysalert')
-	@can('bank_access')
+	@can('master_bank_access')
 		<div class="row">
 			<div class="col">
 				<div class="panel" id="productsPanel">
@@ -41,7 +41,7 @@
 													</form>
 												</div>
 											</td>
-											@can('bank_edit')
+											@can('master_bank_edit')
 												@include('admin.master.bank.modalEdit')
 											@endcan
 										</tr>
@@ -54,7 +54,7 @@
 			</div>
 		</div>
 	@endcan
-	@can('bank_create')
+	@can('master_bank_create')
 		@include('admin.master.bank.modalCreate')
 	@endcan
 @endsection

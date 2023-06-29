@@ -15,12 +15,16 @@ return new class extends Migration
 	{
 		Schema::create('orders', function (Blueprint $table) {
 			$table->bigIncrements('id');
-			$table->string('customer_id')->nullable();
-			$table->string('product_id')->nullable();
+			$table->bigInteger('customer_id')->nullable();
+			$table->bigInteger('product_id')->nullable();
+			$table->bigInteger('company_id')->nullable();
 			$table->decimal('amount', 12, 2)->nullable();
 			$table->decimal('buy')->nullable();
 			$table->decimal('sell')->nullable();
-			$table->integer('charges')->nullable();
+			$table->integer('pcharges')->nullable();
+			$table->integer('ccharges')->nullable();
+			$table->integer('pfa')->nullable();
+			$table->integer('cfa')->nullable();
 			$table->timestamps();
 			$table->softDeletes();
 		});

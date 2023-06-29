@@ -46,6 +46,79 @@ class ReportDataController extends Controller
 		return response()->json(['orders' => $orders, 'total_buy' => $totalBuy]);
 	}
 
+	public function depositsData(Request $request)
+	{
+		//data filter
+		$startDate = $request->input('start_date');
+		$filterCustomer = $request->input('customerFilter');
+		$filterCompany = $request->input('Company_Filter');
+		$filterAccount = $request->input('Account_Filter');
+		$filterStatus = $request->input('filter_status');
+		$filterValid = $request->input('validation_Filter');
+
+		$query = Payment::query();
+
+		if ($startDate) {
+			$formattedStartDate = Carbon::createFromFormat('d/m/Y', $startDate)->startOfDay();
+			$query->whereDate('created_at', $formattedStartDate);
+		}
+		if ($filterCustomer) {
+			$query->where('customer_id', $filterCustomer);
+		}
+
+		if ($filterCompany) {
+			$query->where('company_id', $filterCompany);
+		}
+
+		if ($filterAccount) {
+			$query->where('recipient_bank', $filterAccount);
+		}
+
+		if ($filterStatus) {
+			$query->where('status', $filterStatus);
+		}
+
+		if ($filterValid) {
+			$query->where('validation', $filterValid);
+		}
+
+		$payments = $query->with('customer')->get();
+		$totalFiltered = $payments->sum('amount');
+
+		$data = [
+			'payments' => $payments,
+			'total_filtered' => $totalFiltered,
+		];
+
+		return response()->json($data);
+	}
+
+	public function customerOrderByDate(Request $request)
+	{
+		$startDate = $request->input('start_date');
+		$filterCustomer = $request->input('customerFilter');
+
+		$query = Order::query();
+		if ($startDate) {
+			$formattedStartDate = Carbon::createFromFormat('d/m/Y', $startDate)->startOfDay();
+			$query->whereDate('created_at', $formattedStartDate);
+		}
+
+		if ($filterCustomer) {
+			$query->where('company_id', $filterCustomer);
+		}
+
+		$orders = $query->with('customer')->with('product')->get();
+		$totalSell = $orders->sum(function ($order) {
+			return ($order->amount + $order->cfa) * $order->sell + $order->ccharges;
+		});
+		$totalFiltered  = $totalSell;
+		$data = [
+			'orders' => $orders,
+			'total_filtered' => $totalFiltered,
+		];
+		return response()->json($data);
+	}
 
 	public function transactsData(Request $request)
 	{
@@ -133,51 +206,6 @@ class ReportDataController extends Controller
 
 		return response()->json($data);
 	}
-
-
-	public function depositsData(Request $request)
-	{
-		//data filter
-		$startDate = $request->input('start_date');
-		$filterCompany = $request->input('Company_Filter');
-		$filterAccount = $request->input('Account_Filter');
-		$filterStatus = $request->input('filter_status');
-		$filterValid = $request->input('validation_Filter');
-
-		$query = Payment::query();
-
-		if ($startDate) {
-			$formattedStartDate = Carbon::createFromFormat('d/m/Y', $startDate)->startOfDay();
-			$query->whereDate('created_at', $formattedStartDate);
-		}
-
-		if ($filterCompany) {
-			$query->where('company_id', $filterCompany);
-		}
-
-		if ($filterAccount) {
-			$query->where('recipient_bank', $filterAccount);
-		}
-
-		if ($filterStatus) {
-			$query->where('status', $filterStatus);
-		}
-
-		if ($filterValid) {
-			$query->where('validation', $filterValid);
-		}
-
-		$payments = $query->with('customer')->get();
-		$totalFiltered = $payments->sum('amount');
-
-		$data = [
-			'payments' => $payments,
-			'total_filtered' => $totalFiltered,
-		];
-
-		return response()->json($data);
-	}
-
 
 	/**
 	 * Show the form for creating a new resource.

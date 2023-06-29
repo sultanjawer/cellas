@@ -4,7 +4,7 @@
 @section('content')
 	@include('partials.subheader')
 	@include('partials.sysalert')
-	@can('company_access')
+	@can('master_company_access')
 		<div class="row">
 			<div class="col">
 				<div class="panel" id="productsPanel">
@@ -30,6 +30,7 @@
 													data-target="#modalEdit{{$company->id}}">
 														<i class="fal fa-edit mr-1"></i>Edit/Show
 													</a>
+													@can('master_company_delete')
 													<form action="{{route('admin.master.company.delete', $company->id)}}" method="post">
 														@csrf
 														@method('delete')
@@ -37,9 +38,10 @@
 															<i class="fal fa-trash mr-1"></i>Delete
 														</button>
 													</form>
+													@endcan
 												</div>
 											</td>
-											@can('company_edit')
+											@can('master_company_edit')
 												@include('admin.master.company.modalEdit')
 											@endcan
 										</tr>
@@ -52,7 +54,7 @@
 			</div>
 		</div>
 	@endcan
-	@can('company_create')
+	@can('master_company_create')
 		@include('admin.master.company.modalCreate')
 	@endcan
 @endsection

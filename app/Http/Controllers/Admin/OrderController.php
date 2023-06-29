@@ -8,11 +8,14 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Bank;
+use App\Models\Companies;
 use App\Models\Customer;
+use App\Models\DesignateBank;
 use App\Models\Payment;
 
 class OrderController extends Controller
@@ -36,6 +39,7 @@ class OrderController extends Controller
 		$deposits = Payment::all();
 		$products = Product::select('id', 'symbol', 'currency')->get();
 		$banks = Bank::all();
+		$companies = Companies::select('id', 'company_name')->get();
 
 		$sumAmountSell = $orders->groupBy('customer_id')->map(function ($orders) {
 			return $orders->sum(function ($order) {
@@ -59,7 +63,7 @@ class OrderController extends Controller
 			return $amountDeposits - $sumAmountSellAndCharges->get($customerId);
 		});
 
-		return view('admin.order.index', compact('module_name', 'page_title', 'page_subtitle', 'page_heading', 'heading_class', 'page_desc', 'orders', 'customers', 'products', 'banks', 'sumAmountSell', 'sumCharges', 'sumAmountSellAndCharges', 'sumAmountDeposits', 'aggregates'));
+		return view('admin.order.index', compact('module_name', 'page_title', 'page_subtitle', 'page_heading', 'heading_class', 'page_desc', 'orders', 'customers', 'products', 'banks', 'sumAmountSell', 'sumCharges', 'sumAmountSellAndCharges', 'sumAmountDeposits', 'aggregates', 'companies'));
 	}
 
 	/**
@@ -78,6 +82,8 @@ class OrderController extends Controller
 
 		$customers = Customer::all(['name', 'id']);
 		$products = Product::all(['id', 'product_name']);
+		$companies = Companies::all(['id', 'company_name']);
+		$banks = Bank::all(['id', 'bank_name', 'account']);
 
 		return view('admin.order.create', compact('module_name', 'page_title', 'page_subtitle', 'page_heading', 'heading_class', 'page_desc', 'customers'));
 	}
@@ -88,30 +94,51 @@ class OrderController extends Controller
 	 * @param  \Illuminate\Http\Request  $request
 	 * @return \Illuminate\Http\Response
 	 */
+
 	public function store(Request $request)
 	{
-		$order = new Order();
+		try {
+			DB::beginTransaction();
 
-		$order->customer_id = $request->input('customer_id');
-		$order->product_id = $request->input('product_id');
-		$order->amount = $request->input('amount');
-		$order->buy = $request->input('buy');
-		$order->sell = $request->input('sell');
-		$order->bank_id = $request->input('bank_id');
+			$order = new Order();
 
-		if ($request->input('product_id') == 1) {
-			$amount = $request->input('amount');
-			if ($amount < 5000) {
-				$order->charges = 150000;
-			} elseif ($amount >= 5000 && $amount < 20000) {
-				$order->charges = 85000;
+			// Populate order attributes
+			$order->customer_id = $request->input('customer_id');
+			$order->product_id = $request->input('product_id');
+			$order->company_id = $request->input('company_id');
+			$order->amount = $request->input('amount');
+			$order->buy = $request->input('buy');
+			$order->sell = $request->input('sell');
+			$order->pcharges = $request->input('pcharges');
+			$order->ccharges = $request->input('ccharges');
+			$order->pfa = $request->input('pfa');
+			$order->cfa = $request->input('cfa');
+
+			$order->save(); // Save the order to generate the ID
+
+			$orderID = $order->id; // Retrieve the generated order ID
+
+			$selectedBankIDs = explode(',', $request->input('selectedRows')); // Split the comma-separated string into an array of selected bank IDs
+
+			foreach ($selectedBankIDs as $bankID) {
+				$selectedBanks = new DesignateBank();
+				$selectedBanks->order_id = $orderID;
+				$selectedBanks->bank_id = $bankID;
+				$selectedBanks->save();
 			}
-		}
 
-		// dd($order);
-		$order->save();
-		return redirect()->back()->with('success', 'Order created successfully!');
+			DB::commit(); // Commit the transaction
+
+			session()->flash('message', trans('global.create_success'));
+			return redirect()->back()->with('success', 'Order created successfully!');
+		} catch (\Exception $e) {
+			DB::rollback(); // Rollback the transaction in case of any exception
+
+			// Handle the exception as needed
+			return redirect()->back()->with('error', 'Failed to create order. Please try again.');
+		}
 	}
+
 
 	/**
 	 * Display the specified resource.
@@ -132,7 +159,21 @@ class OrderController extends Controller
 	 */
 	public function edit($id)
 	{
-		//
+		$module_name = 'Orders';
+		$page_title = 'Customer';
+		$page_subtitle = 'Orders';
+		$page_heading = 'Customer Orders';
+		$heading_class = 'fal fa-receipt';
+		$page_desc = 'List of Customer Orders';
+
+		$order = Order::findOrFail($id);
+		$selectedBankIDs = DesignateBank::where('order_id', $id)->pluck('bank_id')->toArray();
+		$customers = Customer::select('id', 'name')->get();
+		$products = Product::select('id', 'symbol', 'currency')->get();
+		$banks = Bank::all();
+		$companies = Companies::select('id', 'company_name')->get();
+		// dd($selectedBankIDs);
+		return view('admin.order.edit', compact('module_name', 'page_title', 'page_subtitle', 'page_heading', 'heading_class', 'page_desc', 'order', 'selectedBankIDs', 'customers', 'products', 'banks', 'companies'));
 	}
 
 	/**
@@ -144,19 +185,51 @@ class OrderController extends Controller
 	 */
 	public function update(Request $request, $id)
 	{
-		$order = Order::find($id);
+		try {
+			DB::beginTransaction();
 
-		$order->customer_id = $request->input('customer_id');
-		$order->product_id = $request->input('product_id');
-		$order->amount = $request->input('amount');
-		$order->buy = $request->input('buy');
-		$order->sell = $request->input('sell');
-		$order->bank_id = $request->input('bank_id');
-		$order->charges = $request->input('charges');
+			// Retrieve the order
+			$order = Order::findOrFail($id);
 
-		$order->save();
+			// Update the order attributes based on the form input
+			$order->customer_id = $request->input('customer_id');
+			$order->product_id = $request->input('product_id');
+			$order->company_id = $request->input('company_id');
+			$order->amount = $request->input('amount');
+			$order->buy = $request->input('buy');
+			$order->sell = $request->input('sell');
+			$order->pcharges = $request->input('pcharges');
+			$order->ccharges = $request->input('ccharges');
+			$order->pfa = $request->input('pfa');
+			$order->cfa = $request->input('cfa');
 
-		return redirect()->back()->with('success', 'Order saved successfully!');
+			$order->save(); // Save the updated order
+
+			$existingBankIDs = $order->designateBanks->pluck('bank_id')->toArray(); // Get the existing bank IDs related to the order
+			$selectedBankIDs = explode(',', $request->input('selectedRows')); // Split the comma-separated string into an array of selected bank IDs
+
+			// Remove any existing DesignateBank records that are not present in the selected bank IDs
+			$removedBankIDs = array_diff($existingBankIDs, $selectedBankIDs);
+			DesignateBank::where('order_id', $order->id)->whereIn('bank_id', $removedBankIDs)->delete();
+
+			// Add or update DesignateBank records for the selected bank IDs
+			foreach ($selectedBankIDs as $bankID) {
+				DesignateBank::updateOrCreate(
+					['order_id' => $order->id, 'bank_id' => $bankID],
+					['order_id' => $order->id]
+				);
+			}
+
+			DB::commit(); // Commit the transaction
+
+			session()->flash('message', trans('global.update_success'));
+			return redirect()->back()->with('success', 'Order updated successfully!');
+		} catch (\Exception $e) {
+			DB::rollback(); // Rollback the transaction in case of any exception
+
+			// Handle the exception as needed
+			return redirect()->back()->with('error', 'Failed to update order. Please try again.');
+		}
 	}
 
 	/**

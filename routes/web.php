@@ -130,8 +130,13 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 	Route::put('payment/{id}/update', 'PaymentController@update')->name('payment.update');
 	Route::delete('payment/{id}/delete', 'PaymentController@destroy')->name('payment.delete');
 	Route::put('payment/{id}/setstatus', 'PaymentController@setStatus')->name('payment.setStatus');
+	Route::put('payment/{id}/setValidation', 'PaymentController@setValidation')->name('payment.setValidation');
 
 	// report
+	//new in cellas
+	Route::get('report/orders/customerOrderByDate', 'ReportDataController@customerOrderByDate')->name('report.orders.customerOrderByDate');
+
+	//old
 	Route::get('report/orders/data', 'ReportDataController@transactsData')->name('report.orders.data');
 	Route::get('report/orders', 'ReportController@index')->name('report.orders');
 	Route::get('report/orders/byDateRangeByBank', 'ReportDataController@byDateRangeByBank')->name('report.orders.byDateRangeByBank');

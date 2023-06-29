@@ -3,7 +3,7 @@
 @endsection
 @section('content')
 	@include('partials.subheader')
-	@include('partials.sysalert')
+	{{-- @include('partials.sysalert') --}}
 	@can('payment_access')
 		<div class="row">
 			<div class="col">
@@ -19,7 +19,23 @@
 									<label for="" class="help-block">Select Date to display the report by date.</label>
 								</div>
 							</div>
-							<div class="col-md-4">
+							<div class="col-md-3">
+								<div class="form-group">
+									<label for="customerFilter" class="col-form-label form-label">Customer Filter</label>
+									<select class="form-control custom-select dataFilter"
+										name="customerFilter" id="customerFilter">
+										<option value=""></option>
+											<option value="all">All Customer</option>
+										@foreach ($customers as $customer)
+											<option value="{{$customer->id}}">
+												{{$customer->id}} - {{$customer->name}}
+											</option>
+										@endforeach
+									</select>
+									<label for="" class="help-block">Select Date to display the report by date.</label>
+								</div>
+							</div>
+							<div class="col-md-3">
 								<div class="form-group">
 									<label for="" class="col-form-label form-label">Company Filter</label>
 										<select name="Company_Filter" id="Company_Filter" class="mr-2 form-control dataFilter">
@@ -32,7 +48,7 @@
 									<label for="" class="help-block">Filter data by company.</label>
 								</div>
 							</div>
-							<div class="col-md-4">
+							<div class="col-md-3">
 								<div class="form-group">
 									<label for="" class="col-form-label form-label">Account Filter</label>
 										<select name="Account_Filter" id="Account_Filter" class="mr-2 form-control dataFilter">
@@ -63,8 +79,8 @@
 										<select name="validation_Filter" id="validation_Filter" class="mr-2 form-control dataFilter">
 											<option value=""></option>
 											<option value="all">All State</option>
-											<option value="0">Not Validate</option>
-											<option value="1">Validated</option>
+											<option value="unvalidated">Not Validate</option>
+											<option value="validated">Validated</option>
 										</select>
 									<label for="" class="help-block">for customer payment validation.</label>
 								</div>
@@ -72,7 +88,7 @@
 							<div class="col-md-4">
 								<div class="form-group">
 									<label for="" class="col-form-label form-label">Total Filtered</label>
-									<input type="text" class="fw-500 form-control text-right" id="total_checked" name="total_checked">
+									<input type="text" class="fw-500 form-control text-right" id="total_checked" name="total_checked" readonly>
 									<label for="" class="help-block">Total value filtered.</label>
 								</div>
 							</div>
@@ -82,6 +98,7 @@
 						<div class="panel-content">
 							<table class="table table-hover table-sm table-striped table-bordered w-100" id="paymentsTable">
 								<thead>
+									<th>Validation</th>
 									<th>Status</th>
 									<th>Customer Name</th>
 									<th>Slip date</th>
@@ -117,18 +134,10 @@
 			"<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
 			buttons: [
 				{
-					text: '<i class="fas fa-filter"></i>',
-					titleAttr: 'Show Filter',
-					className: 'btn btn-primary btn-sm btn-icon ml-2',
-					action: function (e, dt, node, config) {
-						var $collapse = $('#filterCollapse');
-
-						if ($collapse.hasClass('show')) {
-						$collapse.collapse('hide');
-						} else {
-						$collapse.collapse('show');
-						}
-					}
+					extend: 'colvis',
+					text: '<i class="fa fa-columns"></i>',
+					titleAttr: 'Col visibility',
+					className: 'btn-outline-danger btn-sm'
 				},
 				{
 					extend: 'excelHtml5',
@@ -143,17 +152,31 @@
 					className: 'btn-outline-primary btn-xs btn-icon mr-1'
 				},
 				{
+					text: '<i class="fas fa-filter"></i>',
+					titleAttr: 'Show Filter',
+					className: 'btn btn-outline-warning btn-sm btn-icon ml-2',
+					action: function (e, dt, node, config) {
+						var $collapse = $('#filterCollapse');
+
+						if ($collapse.hasClass('show')) {
+						$collapse.collapse('hide');
+						} else {
+						$collapse.collapse('show');
+						}
+					}
+				},
+				{
 					text: '<i class="fa fa-cash-register"></i>',
 					titleAttr: 'Add New Payment',
-					className: 'btn btn-info btn-sm btn-icon ml-2',
+					className: 'btn btn-info btn-sm btn-icon ',
 					action: function(e, dt, node, config) {
 						$('#modalCreatePayment').modal('show'); // Replace #myModal with the ID of your modal element
 					}
 				}
 			],
 			columnDefs: [
-				{ className: 'text-right', targets: [3] },
-				{ className: 'text-center', targets: [0, 2, 4] },
+				{ className: 'text-right', targets: [4] },
+				{ className: 'text-center', targets: [0, 1, 6] },
 			]
 		});
 
@@ -164,12 +187,13 @@
 		});
 
 		// Fetch and update orders data based on date range
-		function updatepaymentsTable(startDate, filterCompany, filterAccount,filterStatus, filterValid) {
+		function updatepaymentsTable(startDate, filterCustomer,filterCompany, filterAccount,filterStatus, filterValid) {
 			$.ajax({
 			url: '{{ route("admin.report.deposits.data") }}',
 			type: 'GET',
 			data: {
 				start_date: startDate,
+				customerFilter: filterCustomer,
 				Company_Filter: filterCompany,
 				Account_Filter: filterAccount,
 				filter_status: filterStatus,
@@ -182,7 +206,6 @@
 				if (response.payments.length > 0) {
 					$.each(response.payments, function(index, payment) {
 						var date = new Date(payment.created_at);
-
 						var formattedDate = date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }); // Change the locale and format options as needed
 
 						var slipDate = payment.slip_date;
@@ -197,12 +220,21 @@
 							maximumFractionDigits: 2,
 						});
 						var formattedAmount = formatter.format(amount);
-
 						var checkStatus = payment.status;
+						var validBtn = `
+							<form action="{{ route("admin.payment.setValidation", ":paymentId") }}" method="post">
+								<input type="hidden" name="_token" value="{{ csrf_token() }}">
+								<input type="hidden" name="_method" value="put">
+								<button type="submit" class="btn btn-xs btn-icon ${payment.validation === 'validated' ? 'btn-success' : 'btn-warning'}">
+									<i class="fa ${payment.validation === 'validated' ? 'fa-check-double' : 'fa-upload'}"></i>
+								</button>
+								<span hidden>${payment.validation}</span>
+							</form>
+						`;
 						var formHtml = `
 							<form action="{{ route("admin.payment.setStatus", ":paymentId") }}" method="post">
-								@csrf
-								@method("put")
+								<input type="hidden" name="_token" value="{{ csrf_token() }}">
+								<input type="hidden" name="_method" value="put">
 								<button type="submit" class="btn btn-xs btn-icon ${payment.status === 'checked' ? 'btn-success' : 'btn-default'}">
 									<i class="fal ${payment.status === 'checked' ? 'fa-check' : 'fa-upload'}"></i>
 								</button>
@@ -216,8 +248,8 @@
 								</a>
 								<div class="dropdown-menu dropdown-menu-right">
 									<form action="{{ route('admin.payment.delete', ['id' => 'paymentId']) }}" method="post">
-										@csrf
-										@method('delete')
+										<input type="hidden" name="_token" value="{{ csrf_token() }}">
+										<input type="hidden" name="_method" value="delete">
 										<a href="{{ route('admin.payment.edit', ['id' => ':paymentId']) }}" class="dropdown-item fw-500">
 											<i class="fal fa-edit mr-1"></i>Edit
 										</a>
@@ -228,9 +260,13 @@
 								</div>
 							</div>
 						`;
-						editDeleteButtons = editDeleteButtons.replace('paymentId', payment.id).replace(':paymentId', payment.id);
-						formHtml = formHtml.replace(':paymentId', payment.id);
+
+						editDeleteButtons = editDeleteButtons.replace(/paymentId/g, payment.id);
+						validBtn = validBtn.replace(/:paymentId/g, payment.id);
+						formHtml = formHtml.replace(/:paymentId/g, payment.id);
+
 						paymentsTable.row.add([
+							validBtn,
 							formHtml,
 							customerName,
 							formattedSlipDate,
@@ -248,18 +284,23 @@
 		// Trigger initial data update on page load
 		var startDate = $('#start_date').val();
 		var filterCompany = $('#Company_Filter').val();
+		var filterCustomer = $('#customerFilter').val();
 		var filterAccount = $('#Account_Filter').val();
 		var filterStatus = $('#filter_status').val();
 		var filterValid = $('#validation_Filter').val();
-		updatepaymentsTable(startDate, filterCompany, filterAccount, filterStatus, filterValid);
+		updatepaymentsTable(startDate, filterCustomer,filterCompany, filterAccount, filterStatus, filterValid);
 
 		// Fetch and update status data when the datafilter changes
 		$('.dataFilter').on('change', function() {
 			var startDate = $('#start_date').val();
+			var filterCustomer = $('#customerFilter').val();
 			var filterCompany = $('#Company_Filter').val();
 			var filterAccount = $('#Account_Filter').val();
 			var filterStatus = $('#filter_status').val();
 			var filterValid = $('#validation_Filter').val();
+			if (filterCustomer === 'all') {
+				filterCustomer = '';
+			}
 			if (filterAccount === 'all') {
 				filterAccount = '';
 			}
@@ -272,7 +313,7 @@
 			if (filterValid === 'all') {
 				filterValid = '';
 			}
-			updatepaymentsTable(startDate, filterCompany, filterAccount, filterStatus, filterValid);
+			updatepaymentsTable(startDate, filterCustomer,filterCompany, filterAccount, filterStatus, filterValid);
 		});
 	});
 </script>
@@ -280,6 +321,9 @@
 	$(document).ready(function() {
 		$("#Company_Filter").select2({
 			placeholder: "-- Select Company --",
+		});
+		$("#customerFilter").select2({
+			placeholder: "-- Select Customer --",
 		});
 		$("#Account_Filter").select2({
 			placeholder: "-- Select Account --",
