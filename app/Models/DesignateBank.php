@@ -21,6 +21,11 @@ class DesignateBank extends Model
 		'bank_id',
 	];
 
+	public function bank()
+	{
+		return $this->belongsTo(Bank::class);
+	}
+
 	public function order()
 	{
 		return $this->belongsTo(Order::class, 'order_id');

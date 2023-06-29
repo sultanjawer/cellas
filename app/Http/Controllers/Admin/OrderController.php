@@ -148,7 +148,41 @@ class OrderController extends Controller
 	 */
 	public function show($id)
 	{
-		//
+		$module_name = 'Orders';
+		$page_title = 'Detail';
+		$page_subtitle = 'Order';
+		$page_heading = 'Detail Customer Orders';
+		$heading_class = 'fal fa-receipt';
+		$page_desc = 'Detail Customer Orders';
+
+		$order = Order::findOrFail($id);
+		$customer = Customer::where('id', $order->customer_id)->first();
+		$deposits = Payment::where('customer_id', $customer->id)->get();
+		$words = explode(' ', $customer->name);
+		$initialName = count($words) === 1 ? Str::limit($customer->name, 2, '') : implode('', array_map(fn ($word) => Str::substr($word, 0, 1), $words));
+
+		$orderDate = $order->created_at;
+		$orderAmount = $order->amount;
+		$ordercFa = $order->cfa;
+		$orderAmtCfa = $orderAmount + $ordercFa;
+		$orderRate = $order->sell;
+		$orderTotal = $orderAmtCfa * $orderRate;
+		$orderCharges = $order->ccharges;
+		$orderCurrent = $orderTotal + $orderCharges;
+
+		$customerOrders = Order::where('customer_id', $customer->id)->get();
+		$allOrders = $customerOrders->sum(function ($customerOrder) {
+			return (($customerOrder->amount + $customerOrder->cfa) * $customerOrder->sell) + $customerOrder->ccharges;
+		});
+		$allDeposits = $deposits->sum('amount');
+		$currentDeposits = $allDeposits - $allOrders + $orderCurrent;
+		$balance = $allDeposits - $allOrders;
+		// dd($balance);
+		$sumAmountDeposits = $deposits->sum('amount');
+		$banks = DesignateBank::where('order_id', $order->id)->get();
+		// dd($banks);
+
+		return view('admin.order.orderDetail', compact('module_name', 'page_title', 'page_subtitle', 'page_heading', 'heading_class', 'page_desc', 'order', 'customer', 'initialName', 'orderDate', 'orderAmount', 'ordercFa', 'orderRate', 'orderCharges', 'orderCurrent', 'currentDeposits', 'balance', 'banks'));
 	}
 
 	/**
@@ -160,11 +194,11 @@ class OrderController extends Controller
 	public function edit($id)
 	{
 		$module_name = 'Orders';
-		$page_title = 'Customer';
+		$page_title = 'Edit';
 		$page_subtitle = 'Orders';
-		$page_heading = 'Customer Orders';
+		$page_heading = 'Edit Customer Orders';
 		$heading_class = 'fal fa-receipt';
-		$page_desc = 'List of Customer Orders';
+		$page_desc = 'Edit Customer Orders';
 
 		$order = Order::findOrFail($id);
 		$selectedBankIDs = DesignateBank::where('order_id', $id)->pluck('bank_id')->toArray();

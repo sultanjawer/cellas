@@ -4,109 +4,70 @@
 @section('content')
 	@include('partials.subheader')
 	@include('partials.sysalert')
-
-	<div class="row">
-		<div class="col">
-			<div class="panel" id="productsPanel">
-				<div class="panel-container card-header collapse" id="filterCollapse">
-					<div class="row d-flex justify-content-between" >
-						<div class="form-group col-md-4">
-							<label for="start_date">Date Filter</label>
-							<div class="input-daterange input-group" id="datepicker-5">
-								<input type="text" class="form-control datepicker dataFilter" id="start_date" name="start_date" value="{{ now()->format('d/m/Y') }}">
+	@can('order_access')
+		<div class="row">
+			<div class="col">
+				<div class="panel" id="productsPanel">
+					<div class="panel-container card-header collapse" id="filterCollapse">
+						<div class="row d-flex justify-content-between" >
+							<div class="form-group col-md-4">
+								<label for="start_date">Date Filter</label>
+								<div class="input-daterange input-group" id="datepicker-5">
+									<input type="text" class="form-control datepicker dataFilter" id="start_date" name="start_date" value="{{ now()->format('d/m/Y') }}">
+								</div>
+							</div>
+							<div class="form-group col-md-4">
+								<label for="customerFilter">Customer Filter</label>
+								<select class="form-control custom-select"
+									name="customerFilter" id="customerFilter">
+									<option ></option>
+									<option value="all">All Customers</option>
+									@foreach ($customers as $customer)
+										<option value="{{$customer->id}}">
+											{{$customer->id}} - {{$customer->name}}
+										</option>
+									@endforeach
+								</select>
+							</div>
+							<div class="form-group col-md-4">
+								<label for="total_filtered">Total Value Filter</label>
+								<input type="text" class="fw-500 form-control text-right dataFilter" id="total_filtered" name="total_filtered">
 							</div>
 						</div>
-						<div class="form-group col-md-4">
-							<label for="customerFilter">Customer Filter</label>
-							<select class="form-control custom-select"
-								name="customerFilter" id="customerFilter">
-								<option ></option>
-								<option value="all">All Customers</option>
-								@foreach ($customers as $customer)
-									<option value="{{$customer->id}}">
-										{{$customer->id}} - {{$customer->name}}
-									</option>
-								@endforeach
-							</select>
-						</div>
-						<div class="form-group col-md-4">
-							<label for="total_filtered">Total Value Filter</label>
-							<input type="text" class="fw-500 form-control text-right dataFilter" id="total_filtered" name="total_filtered">
-						</div>
 					</div>
-				</div>
-				<div class="panel-container">
-					<div class="panel-content">
-						<table class="table table-hover table-sm table-striped table-bordered w-100" id="dataOrder">
-							<thead>
-								<th>CustName</th>
-								<th>Date</th>
-								<th>Product</th>
-								<th>Amt</th>
-								<th>Buh</th>
-								<th>Sell</th>
-								<th>PFA</th>
-								<th>CFA</th>
-								<th>PCh</th>
-								<th>CCh</th>
-								<th></th>
-								{{-- <th>Product</th>
-								<th>Amount</th>
-								<th>Buy</th>
-								<th>Sell</th>
-								<th>Charges</th>
-								<th></th> --}}
-							</thead>
-							<tbody>
-								{{-- @foreach ($orders as $order)
-									<tr>
-										<td>{{ date('d/m/Y', strtotime($order->created_at)) }}</td>
-										<td>
-											<a href="javascript:void()" data-toggle="modal" class="fw-500"
-												data-target="#detailOrder{{$order->id}}">
-												<i class="far fa-info-circle mr-1"></i>{{$order->customer->name}}
-											</a>
-										</td>
-										<td>{{$order->product->currency}} {{$order->product->symbol}}</td>
-										<td class="text-right">{{ number_format($order->amount, 2, '.', ',') }}</td>
-										<td class="text-right">{{ number_format($order->buy, 2, '.', ',') }}</td>
-										<td class="text-right">{{ number_format($order->sell, 2, '.', ',') }}</td>
-										<td class="text-right">{{ number_format($order->pcharges, 2, '.', ',') }}</td>
-										<td width="5%" class="text-center">
-											<button class="btn btn-toolbar-master" data-toggle="dropdown">
-												<i class="fas fa-ellipsis-v"></i>
-											</button>
-											<div class="dropdown-menu dropdown-menu-right">
-												<form action="{{route('admin.order.delete', $order->id)}}" method="post">
-													@csrf
-													@method('delete')
-
-													<a href="" class="dropdown-item fw-500">
-														<i class="far fa-history mr-1"></i>Transaction History
-													</a>
-													<a href="{{route('admin.order.edit', $order->id)}}" class="dropdown-item fw-500">
-														<i class="fal fa-edit mr-1"></i>Edit
-													</a>
-													@can('user_management_access')
-													<button class="dropdown-item" type="submit">
-														<i class="fal fa-trash mr-1"></i>Delete
-													</button>
-													@endcan
-												</form>
-											</div>
-										</td>
-										@include('admin.order.orderDetail')
-									</tr>
-								@endforeach --}}
-							</tbody>
-						</table>
+					<div class="panel-container">
+						<div class="panel-content">
+							<table class="table table-hover table-sm table-striped table-bordered w-100" id="dataOrder">
+								<thead>
+									<th>CustName</th>
+									<th>Date</th>
+									<th>Product</th>
+									<th>Amt</th>
+									<th>Buh</th>
+									<th>Sell</th>
+									<th>PFA</th>
+									<th>CFA</th>
+									<th>PCh</th>
+									<th>CCh</th>
+									<th></th>
+									{{-- <th>Product</th>
+									<th>Amount</th>
+									<th>Buy</th>
+									<th>Sell</th>
+									<th>Charges</th>
+									<th></th> --}}
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	@can('order_create')
-	@include('admin.order.modalCreate')
+		@can('order_create')
+			@include('admin.order.modalCreate')
+		@endcan
 	@endcan
 @endsection
 
@@ -206,7 +167,9 @@
 						$.each(response.orders, function(index, order) {
 							var date = new Date(order.created_at);
 							var formattedDate = date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
-							var customerName = order.customer.name;
+							var customerName = '<a href="{{ route("admin.order.show", ["id" => ":customerId"]) }}">'+order.customer.name+'</a>';
+							customerName = customerName.replace(':customerId', order.customer_id);
+
 							var productSymbol = order.product.symbol;
 							var amount = order.amount;
 							var purchasePrice = order.buy;
@@ -224,7 +187,7 @@
 									<form action="{{ route('admin.order.delete', ['id' => 'orderId']) }}" method="post">
 										<input type="hidden" name="_token" value="{{ csrf_token() }}">
 										<input type="hidden" name="_method" value="delete">
-										<a href="{{ route('admin.order.edit', ['id' => 'orderId']) }}" class="dropdown-item fw-500">
+										<a href="{{ route('admin.customer.transactions', ['id' => 'customerId']) }}" class="dropdown-item fw-500">
 											<i class="far fa-history mr-1"></i>Transaction Histroy
 										</a>
 										<a href="{{ route('admin.order.edit', ['id' => 'orderId']) }}" class="dropdown-item fw-500">
@@ -238,7 +201,7 @@
 							</div>
 						`;
 
-						editDeleteButtons = editDeleteButtons.replace(/orderId/g, order.id);
+						editDeleteButtons = editDeleteButtons.replace(/customerId/g, order.customer_id).replace(/orderId/g, order.id);
 							dataOrder.row.add([
 								customerName,
 								formattedDate,

@@ -186,8 +186,16 @@ class CustomerController extends Controller
 
 		$customerOrders = Order::where('customer_id', $customer->id)
 			->join('products', 'orders.product_id', '=', 'products.id')
-			->select('orders.customer_id', 'products.symbol as currency', 'orders.amount as order', 'charges', 'orders.created_at as transaction_date', \DB::raw('orders.amount * orders.sell + orders.charges as shop'))
+			->select(
+				'orders.customer_id',
+				'products.symbol as currency',
+				'orders.amount as order',
+				'pcharges',
+				'orders.created_at as transaction_date',
+				\DB::raw('((orders.amount + orders.cfa) * orders.sell) + orders.ccharges as shop')
+			)
 			->get();
+
 
 		$customerPayments = Payment::where('customer_id', $customer->id)
 			->select('customer_id', 'slip_date as transaction_date', 'amount as deposit')
