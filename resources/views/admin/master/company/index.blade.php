@@ -4,53 +4,57 @@
 @section('content')
 	@include('partials.subheader')
 	@include('partials.sysalert')
-
-	<div class="row">
-		<div class="col">
-			<div class="panel" id="productsPanel">
-				<div class="panel-container">
-					<div class="panel-content">
-						<table class="table table-hover table-sm table-striped table-bordered w-100" id="customersTable">
-							<thead>
-								<th>Name</th>
-								<th>Code</th>
-								<th>Action</th>
-							</thead>
-							<tbody>
-								@foreach ($companies as $company)
-									<tr>
-										<td><span class="pl-1">{{$company->company_name}}</span></td>
-										<td><span class="pl-1">{{$company->company_code}}</span></td>
-										<td width="5%" class="text-center">
-											<button class="btn btn-toolbar-master" data-toggle="dropdown">
-												<i class="fas fa-ellipsis-v"></i>
-											</button>
-											<div class="dropdown-menu dropdown-menu-right">
-												<a href="javascript:void()" data-toggle="modal" class="dropdown-item fw-500"
-												data-target="#modalEdit{{$company->id}}">
-													<i class="fal fa-edit mr-1"></i>Edit/Show
-												</a>
-												<form action="{{route('admin.master.company.delete', $company->id)}}" method="post">
-													@csrf
-													@method('delete')
-													<button class="dropdown-item" type="submit" onclick="return confirm('Are you sure you want to delete this data?')">
-														<i class="fal fa-trash mr-1"></i>Delete
-													</button>
-												</form>
-											</div>
-										</td>
-										@include('admin.master.company.modalEdit')
-									</tr>
-								@endforeach
-							</tbody>
-						</table>
+	@can('company_access')
+		<div class="row">
+			<div class="col">
+				<div class="panel" id="productsPanel">
+					<div class="panel-container">
+						<div class="panel-content">
+							<table class="table table-hover table-sm table-striped table-bordered w-100" id="customersTable">
+								<thead>
+									<th>Name</th>
+									<th>Code</th>
+									<th>Action</th>
+								</thead>
+								<tbody>
+									@foreach ($companies as $company)
+										<tr>
+											<td><span class="pl-1">{{$company->company_name}}</span></td>
+											<td><span class="pl-1">{{$company->company_code}}</span></td>
+											<td width="5%" class="text-center">
+												<button class="btn btn-toolbar-master" data-toggle="dropdown">
+													<i class="fas fa-ellipsis-v"></i>
+												</button>
+												<div class="dropdown-menu dropdown-menu-right">
+													<a href="javascript:void()" data-toggle="modal" class="dropdown-item fw-500"
+													data-target="#modalEdit{{$company->id}}">
+														<i class="fal fa-edit mr-1"></i>Edit/Show
+													</a>
+													<form action="{{route('admin.master.company.delete', $company->id)}}" method="post">
+														@csrf
+														@method('delete')
+														<button class="dropdown-item" type="submit" onclick="return confirm('Are you sure you want to delete this data?')">
+															<i class="fal fa-trash mr-1"></i>Delete
+														</button>
+													</form>
+												</div>
+											</td>
+											@can('company_edit')
+												@include('admin.master.company.modalEdit')
+											@endcan
+										</tr>
+									@endforeach
+								</tbody>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	@include('admin.master.company.modalCreate')
-
+	@endcan
+	@can('company_create')
+		@include('admin.master.company.modalCreate')
+	@endcan
 @endsection
 
 {{-- script section --}}

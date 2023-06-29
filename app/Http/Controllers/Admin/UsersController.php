@@ -18,6 +18,12 @@ class UsersController extends Controller
 	public function index(Request $request)
 	{
 		abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+		$module_name = 'User Management';
+		$page_title = 'User';
+		$page_subtitle = 'Lists';
+		$page_heading = 'List of Users';
+		$heading_class = 'fal fa-briefcase';
+		$page_desc = 'List of all users in the application.';
 
 		if ($request->ajax()) {
 			$query = User::with(['roles'])->select(sprintf('%s.*', (new User())->table));
@@ -70,13 +76,13 @@ class UsersController extends Controller
 		}
 
 		$breadcrumb = trans('cruds.user.title') . " " . trans('global.list');
-		return view('admin.users.index', compact('breadcrumb'));
+		return view('admin.users.index', compact('breadcrumb', 'module_name', 'page_title', 'page_subtitle', 'page_heading', 'heading_class', 'page_desc'));
 	}
 
 	public function create()
 	{
 		abort_if(Gate::denies('user_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-		$module_name = 'Users';
+		$module_name = 'User Management';
 		$page_title = 'Add';
 		$page_subtitle = 'New Users';
 		$page_heading = 'Add New Users';
@@ -101,11 +107,18 @@ class UsersController extends Controller
 	{
 		abort_if(Gate::denies('user_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
+		$module_name = 'User Management';
+		$page_title = 'Add';
+		$page_subtitle = 'New Users';
+		$page_heading = 'Add New Users';
+		$heading_class = 'fal fa-user-plus';
+		$page_desc = 'You can add/create new user in here.';
+
 		$roles = Role::pluck('title', 'id');
 		$access = User::ROLE_TYPE_SELECT;
 		$user->load('roles');
 		$breadcrumb = trans('global.edit') . " " .  trans('cruds.user.title');
-		return view('admin.users.edit', compact('roles', 'user', 'access', 'breadcrumb'));
+		return view('admin.users.edit', compact('roles', 'user', 'access', 'breadcrumb', 'module_name', 'page_title', 'page_subtitle', 'page_heading', 'heading_class', 'page_desc'));
 	}
 
 	public function update(UpdateUserRequest $request, User $user)
@@ -119,11 +132,17 @@ class UsersController extends Controller
 	public function show(User $user)
 	{
 		abort_if(Gate::denies('user_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+		$module_name = 'User Management';
+		$page_title = 'Detail';
+		$page_subtitle = 'User';
+		$page_heading = 'User detal';
+		$heading_class = 'fal fa-user-plus';
+		$page_desc = 'User detail.';
 
 		$user->load('roles');
 		$breadcrumb = trans('global.show') . " " .  trans('cruds.user.title');
 		$access = User::ROLE_TYPE_SELECT;
-		return view('admin.users.show', compact('user', 'access', 'breadcrumb'));
+		return view('admin.users.show', compact('user', 'access', 'breadcrumb', 'module_name', 'page_title', 'page_subtitle', 'page_heading', 'heading_class', 'page_desc'));
 	}
 
 	public function destroy(User $user)

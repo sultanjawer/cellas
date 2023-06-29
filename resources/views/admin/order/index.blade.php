@@ -8,7 +8,6 @@
 	<div class="row">
 		<div class="col">
 			<div class="panel" id="productsPanel">
-
 				<div class="panel-container">
 					<div class="panel-content">
 						<table class="table table-hover table-sm table-striped table-bordered w-100" id="dataPayment">

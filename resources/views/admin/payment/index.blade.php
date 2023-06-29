@@ -4,100 +4,104 @@
 @section('content')
 	@include('partials.subheader')
 	@include('partials.sysalert')
-	<div class="row">
-		<div class="col">
-			<div class="panel" id="productsPanel">
-				<div class="panel-container card-header collapse" id="filterCollapse">
-					<div class="row d-flex justify-content-between" >
-						<div class="col-md-3">
-							<div class="form-group">
-								<label for="" class="col-form-label form-label">Date Filter</label>
-								<div class="input-daterange input-group" id="datepicker-5">
-									<input type="text" class="form-control datepicker dataFilter" id="start_date" name="start_date" value="{{ now()->format('d/m/Y') }}">
+	@can('payment_access')
+		<div class="row">
+			<div class="col">
+				<div class="panel" id="productsPanel">
+					<div class="panel-container card-header collapse" id="filterCollapse">
+						<div class="row d-flex justify-content-between" >
+							<div class="col-md-3">
+								<div class="form-group">
+									<label for="" class="col-form-label form-label">Date Filter</label>
+									<div class="input-daterange input-group" id="datepicker-5">
+										<input type="text" class="form-control datepicker dataFilter" id="start_date" name="start_date" value="{{ now()->format('d/m/Y') }}">
+									</div>
+									<label for="" class="help-block">Select Date to display the report by date.</label>
 								</div>
-								<label for="" class="help-block">Select Date to display the report by date.</label>
 							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="form-group">
-								<label for="" class="col-form-label form-label">Company Filter</label>
-									<select name="Company_Filter" id="Company_Filter" class="mr-2 form-control dataFilter">
-										<option value=""></option>
-										<option value="all">All Company</option>
-										@foreach ($companies as $company)
-											<option value="{{$company->id}}">{{$company->company_name}}</option>
-										@endforeach
-									</select>
-								<label for="" class="help-block">Filter data by company.</label>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="" class="col-form-label form-label">Company Filter</label>
+										<select name="Company_Filter" id="Company_Filter" class="mr-2 form-control dataFilter">
+											<option value=""></option>
+											<option value="all">All Company</option>
+											@foreach ($companies as $company)
+												<option value="{{$company->id}}">{{$company->company_name}}</option>
+											@endforeach
+										</select>
+									<label for="" class="help-block">Filter data by company.</label>
+								</div>
 							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="form-group">
-								<label for="" class="col-form-label form-label">Account Filter</label>
-									<select name="Account_Filter" id="Account_Filter" class="mr-2 form-control dataFilter">
-										<option value=""></option>
-										<option value="all">All Account</option>
-										@foreach ($banks as $bank)
-											<option value="{{$bank->id}}">{{$bank->acc_name}}, {{$bank->account}}</option>
-										@endforeach
-									</select>
-								<span class="help-block">filter the data based on the bank account to which the customer made transfers.</span>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="" class="col-form-label form-label">Account Filter</label>
+										<select name="Account_Filter" id="Account_Filter" class="mr-2 form-control dataFilter">
+											<option value=""></option>
+											<option value="all">All Account</option>
+											@foreach ($banks as $bank)
+												<option value="{{$bank->id}}">{{$bank->acc_name}}, {{$bank->account}}</option>
+											@endforeach
+										</select>
+									<span class="help-block">filter the data based on the bank account to which the customer made transfers.</span>
+								</div>
 							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="form-group">
-								<label for="" class="col-form-label form-label">Status Filter</label>
-									<select name="filter_status" id="filter_status" class="mr-2 form-control dataFilter">
-										<option value=""></option>
-										<option value="all">All Status</option>
-										<option value="unchecked">Unchecked</option>
-										<option value="checked">Checked</option>
-									</select>
-								<label for="" class="help-block">Filter status.</label>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="" class="col-form-label form-label">Status Filter</label>
+										<select name="filter_status" id="filter_status" class="mr-2 form-control dataFilter">
+											<option value=""></option>
+											<option value="all">All Status</option>
+											<option value="unchecked">Unchecked</option>
+											<option value="checked">Checked</option>
+										</select>
+									<label for="" class="help-block">Filter status.</label>
+								</div>
 							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="form-group">
-								<label for="" class="col-form-label form-label">Validation Filter</label>
-									<select name="validation_Filter" id="validation_Filter" class="mr-2 form-control dataFilter">
-										<option value=""></option>
-										<option value="all">All State</option>
-										<option value="0">Not Validate</option>
-										<option value="1">Validated</option>
-									</select>
-								<label for="" class="help-block">for customer payment validation.</label>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="" class="col-form-label form-label">Validation Filter</label>
+										<select name="validation_Filter" id="validation_Filter" class="mr-2 form-control dataFilter">
+											<option value=""></option>
+											<option value="all">All State</option>
+											<option value="0">Not Validate</option>
+											<option value="1">Validated</option>
+										</select>
+									<label for="" class="help-block">for customer payment validation.</label>
+								</div>
 							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="form-group">
-								<label for="" class="col-form-label form-label">Total Filtered</label>
-								<input type="text" class="fw-500 form-control text-right" id="total_checked" name="total_checked">
-								<label for="" class="help-block">Total value filtered.</label>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="" class="col-form-label form-label">Total Filtered</label>
+									<input type="text" class="fw-500 form-control text-right" id="total_checked" name="total_checked">
+									<label for="" class="help-block">Total value filtered.</label>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-				<div class="panel-container">
-					<div class="panel-content">
-						<table class="table table-hover table-sm table-striped table-bordered w-100" id="paymentsTable">
-							<thead>
-								<th>Status</th>
-								<th>Customer Name</th>
-								<th>Slip date</th>
-								<th>Amount</th>
-								<th>Date</th>
-								<th></th>
-							</thead>
-							<tbody>
+					<div class="panel-container">
+						<div class="panel-content">
+							<table class="table table-hover table-sm table-striped table-bordered w-100" id="paymentsTable">
+								<thead>
+									<th>Status</th>
+									<th>Customer Name</th>
+									<th>Slip date</th>
+									<th>Amount</th>
+									<th>Date</th>
+									<th></th>
+								</thead>
+								<tbody>
 
-							</tbody>
-						</table>
+								</tbody>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	@include('admin.payment.modalCreate')
+	@endcan
+	@can('payment_create')
+		@include('admin.payment.modalCreate')
+	@endcan
 @endsection
 
 @section('scripts')

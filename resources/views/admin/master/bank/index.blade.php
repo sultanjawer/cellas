@@ -4,55 +4,59 @@
 @section('content')
 	@include('partials.subheader')
 	@include('partials.sysalert')
-
-	<div class="row">
-		<div class="col">
-			<div class="panel" id="productsPanel">
-				<div class="panel-container">
-					<div class="panel-content">
-						<table class="table table-hover table-sm table-striped table-bordered w-100" id="customersTable">
-							<thead>
-								<th>Bank</th>
-								<th>Account No.</th>
-								<th>Account Name</th>
-								<th>Action</th>
-							</thead>
-							<tbody>
-								@foreach ($banks as $bank)
-									<tr>
-										<td>{{$bank->bank_name}}</td>
-										<td>{{$bank->account}}</td>
-										<td>{{$bank->acc_name}}</td>
-										<td width="5%" class="text-center">
-											<button class="btn btn-toolbar-master" data-toggle="dropdown">
-												<i class="fas fa-ellipsis-v"></i>
-											</button>
-											<div class="dropdown-menu dropdown-menu-right">
-												<a href="javascript:void()" data-toggle="modal" class="dropdown-item fw-500"
-												data-target="#editBank{{$bank->id}}">
-													<i class="fal fa-edit mr-1"></i>Edit/Show
-												</a>
-												<form action="{{route('admin.master.bank.delete', $bank->id)}}" method="post">
-													@csrf
-													@method('delete')
-													<button class="dropdown-item" type="submit" onclick="return confirm('Are you sure you want to delete this data?')">
-														<i class="fal fa-trash mr-1"></i>Delete
-													</button>
-												</form>
-											</div>
-										</td>
-										@include('admin.master.bank.modalEdit')
-									</tr>
-								@endforeach
-							</tbody>
-						</table>
+	@can('bank_access')
+		<div class="row">
+			<div class="col">
+				<div class="panel" id="productsPanel">
+					<div class="panel-container">
+						<div class="panel-content">
+							<table class="table table-hover table-sm table-striped table-bordered w-100" id="customersTable">
+								<thead>
+									<th>Bank</th>
+									<th>Account No.</th>
+									<th>Account Name</th>
+									<th>Action</th>
+								</thead>
+								<tbody>
+									@foreach ($banks as $bank)
+										<tr>
+											<td>{{$bank->bank_name}}</td>
+											<td>{{$bank->account}}</td>
+											<td>{{$bank->acc_name}}</td>
+											<td width="5%" class="text-center">
+												<button class="btn btn-toolbar-master" data-toggle="dropdown">
+													<i class="fas fa-ellipsis-v"></i>
+												</button>
+												<div class="dropdown-menu dropdown-menu-right">
+													<a href="javascript:void()" data-toggle="modal" class="dropdown-item fw-500"
+													data-target="#editBank{{$bank->id}}">
+														<i class="fal fa-edit mr-1"></i>Edit/Show
+													</a>
+													<form action="{{route('admin.master.bank.delete', $bank->id)}}" method="post">
+														@csrf
+														@method('delete')
+														<button class="dropdown-item" type="submit" onclick="return confirm('Are you sure you want to delete this data?')">
+															<i class="fal fa-trash mr-1"></i>Delete
+														</button>
+													</form>
+												</div>
+											</td>
+											@can('bank_edit')
+												@include('admin.master.bank.modalEdit')
+											@endcan
+										</tr>
+									@endforeach
+								</tbody>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	@include('admin.master.bank.modalCreate')
-
+	@endcan
+	@can('bank_create')
+		@include('admin.master.bank.modalCreate')
+	@endcan
 @endsection
 
 {{-- script section --}}

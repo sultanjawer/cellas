@@ -1,58 +1,56 @@
 @extends('layouts.admin')
 @section('content')
 @include('partials.subheader')
-<div class="row">
-	<div class="col-12">
-	  <div id="panel-1" class="panel show" data-panel-sortable data-panel-close data-panel-collapsed>
-		  <div class="panel-hdr">
-				<h2>
-					Data | <span class="fw-300"><i>{{ $breadcrumb }}</i></span>
-				</h2>
-				@can('permission_create')
-				<div class="panel-toolbar">
-					<a class="btn btn-success  waves-effect waves-themed btn-sm mr-2" href="{{ route('admin.permissions.create') }}" data-toggle="tooltip" title="tambah data" data-original-title="tambah data">
-						{{ trans('global.add') }} {{ trans('cruds.permission.title') }}
-					</a>
+@can('permission_access')
+	<div class="row">
+		<div class="col-12">
+			<div id="panel-1" class="panel show" data-panel-sortable data-panel-close data-panel-collapsed>
+				<div class="panel-hdr">
+					<h2>
+						Data | <span class="fw-300"><i>{{ $breadcrumb }}</i></span>
+					</h2>
+					<div class="panel-toolbar">
+						@can('permission_create')
+						<a class="btn btn-success  waves-effect waves-themed btn-sm mr-2" href="{{ route('admin.permissions.create') }}" data-toggle="tooltip" title="tambah data" data-original-title="tambah data">
+							{{ trans('global.add') }} {{ trans('cruds.permission.title') }}
+						</a>
+						@endcan
+					</div>
 				</div>
-				@endcan
+				<div class="panel-container show">
+					<div class="panel-content">
+						<div class="row">
+							<div class="col-12">
+								<div class="table dataTables_wrapper dt-bootstrap4">
+									<table class="dtr-inline table table-bordered table-striped table-hover ajaxTable datatable datatable-Permission w-100">
+										<thead  class="bg-primary-50">
+											<tr>
+											<th width="10">
+											</th>
+											<th>
+												{{ __('Nama') }}
+											</th>
+											<th>
+												{{ __('Type') }}
+											</th>
+											<th>
+												{{ __('Group') }}
+											</th>
+											<th style="width:15%">
+												{{ trans('global.actions') }}
+											</th>
+											</tr>
+										</thead>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
-			<div class="panel-container show">
-			  <div class="panel-content">
-					<div class="row">
-						<div class="col-12">
-							<div class="table dataTables_wrapper dt-bootstrap4">
-								<table class="dtr-inline table table-bordered table-striped table-hover ajaxTable datatable datatable-Permission w-100">
-									<thead  class="bg-primary-50">
-
-                    <tr>
-                      <th width="10">
-
-                      </th>
-                      <th>
-                          {{ __('Nama') }}
-                      </th>
-                      <th>
-                          {{ __('Type') }}
-                      </th>
-                      <th>
-                          {{ __('Group') }}
-                      </th>
-                      <th style="width:15%">
-                          {{ trans('global.actions') }}
-                      </th>
-                    </tr>
-                  </thead>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
+		</div>
+	</div>
+@endcan
 
 @endsection
 @section('scripts')

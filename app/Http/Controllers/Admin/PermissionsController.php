@@ -91,8 +91,15 @@ class PermissionsController extends Controller
 		abort_if(Gate::denies('permission_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 		$grpTitle = trans('cruds');
 
+		$module_name = 'User Management';
+		$page_title = 'Permissions';
+		$page_subtitle = 'New';
+		$page_heading = 'New User Permission';
+		$heading_class = 'fal fa-lock';
+		$page_desc = 'Manage User Permissions. Caution! better leave this page if you have no idea about this page.';
+
 		$breadcrumb = trans('global.create') . " " .  trans('cruds.permission.title');
-		return view('admin.permissions.create', compact('grpTitle', 'breadcrumb'));
+		return view('admin.permissions.create', compact('grpTitle', 'breadcrumb', 'module_name', 'page_title', 'page_subtitle', 'page_heading', 'heading_class', 'page_desc'));
 	}
 
 	public function store(StorePermissionRequest $request)
@@ -105,11 +112,17 @@ class PermissionsController extends Controller
 	public function edit(Permission $permission)
 	{
 		abort_if(Gate::denies('permission_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+		$module_name = 'User Management';
+		$page_title = 'Permissions';
+		$page_subtitle = 'New';
+		$page_heading = 'New User Permission';
+		$heading_class = 'fal fa-lock';
+		$page_desc = 'Manage User Permissions. Caution! better leave this page if you have no idea about this page.';
 
 		$grpTitle = trans('cruds');
 
 		$breadcrumb = trans('global.edit') . " " .  trans('cruds.permission.title');
-		return view('admin.permissions.edit', compact('permission', 'grpTitle', 'breadcrumb'));
+		return view('admin.permissions.edit', compact('permission', 'grpTitle', 'breadcrumb', 'module_name', 'page_title', 'page_subtitle', 'page_heading', 'heading_class', 'page_desc'));
 	}
 
 	public function update(UpdatePermissionRequest $request, Permission $permission)
@@ -123,8 +136,16 @@ class PermissionsController extends Controller
 	{
 		abort_if(Gate::denies('permission_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 		$grpTitle = trans('cruds');
+
+		$module_name = 'User Management';
+		$page_title = 'User';
+		$page_subtitle = 'Permission';
+		$page_heading = 'View User Permission';
+		$heading_class = 'fal fa-lock';
+		$page_desc = 'Manage User Permissions. Caution! better leave this page if you have no idea about this page.';
+
 		$breadcrumb = trans('global.show') . " " .  trans('cruds.permission.title');
-		return view('admin.permissions.show', compact('permission', 'grpTitle', 'breadcrumb'));
+		return view('admin.permissions.show', compact('permission', 'grpTitle', 'breadcrumb', 'module_name', 'page_title', 'page_subtitle', 'page_heading', 'heading_class', 'page_desc'));
 	}
 
 	public function destroy(Permission $permission)

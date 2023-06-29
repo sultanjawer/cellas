@@ -72,8 +72,7 @@
 				<li class="nav-title">Transaction</li>
 				@can('order_access')
 					<li class="c-sidebar-nav-item {{ request()->is('admin/order*') ? 'active' : '' }}">
-						<a href=""
-							data-filter-tags="transaction orders">
+						<a href="{{route('admin.orders.index')}}" data-filter-tags="transaction orders">
 							<i class="fa-fw fal fa-receipt c-sidebar-nav-icon">
 							</i>
 							Customer Orders
@@ -90,6 +89,7 @@
 					</li>
 				@endcan
 			@endcan
+			{{-- master data --}}
 			@can('master_access')
 				<li class="nav-title">Master Data</li>
 				@can('master_customer_access')
@@ -133,7 +133,6 @@
 					</li>
 				@endcan
 			@endcan
-			{{-- master data --}}
 
 			{{-- pengelolaan berkas --}}
 			{{-- @can('folder_access')

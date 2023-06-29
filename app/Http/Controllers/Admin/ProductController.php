@@ -23,10 +23,12 @@ class ProductController extends Controller
 		$page_title = 'Product List';
 		$page_heading = 'List of Products';
 		$heading_class = 'fal fa-bags-shopping';
+		$page_subtitle = 'Product List';
+		$page_desc = 'List of product';
 
 		$products = Product::all();
 
-		return view('admin.master.product.index', compact('module_name', 'page_title', 'page_heading', 'heading_class', 'products'));
+		return view('admin.master.product.index', compact('module_name', 'page_title', 'page_heading', 'heading_class', 'products' . 'page_subtitle', 'page_desc'));
 	}
 
 	/**
@@ -40,8 +42,10 @@ class ProductController extends Controller
 		$page_title = 'New Product';
 		$page_heading = 'New Product';
 		$heading_class = 'fal fa-bags-shopping';
+		$page_subtitle = 'Add new Product';
+		$page_desc = 'Add or create new product';
 
-		return view('admin.master.product.create', compact('module_name', 'page_title', 'page_heading', 'heading_class'));
+		return view('admin.master.product.create', compact('module_name', 'page_title', 'page_heading', 'heading_class', 'page_subtitle', 'page_desc'));
 	}
 
 	/**
@@ -73,10 +77,12 @@ class ProductController extends Controller
 		$page_title = 'Product Detail';
 		$page_heading = 'Detail of Product';
 		$heading_class = 'fal fa-bags-shopping';
+		$page_subtitle = 'Product Detail';
+		$page_desc = 'Detail of product';
 
 		$product = Product::find($product_id);
 
-		return view('admin.master.product.show', compact('module_name', 'page_title', 'page_heading', 'heading_class', 'product'));
+		return view('admin.master.product.show', compact('module_name', 'page_title', 'page_heading', 'heading_class', 'product', 'page_subtitle', 'page_desc'));
 	}
 
 	/**\
