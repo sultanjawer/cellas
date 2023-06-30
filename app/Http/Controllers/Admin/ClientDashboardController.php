@@ -29,7 +29,7 @@ class ClientDashboardController extends Controller
 
 	public function InsightByDateRange(Request $request, $id)
 	{
-		//not affected by $request
+		// Not affected by $request
 		$deposits = Payment::where('customer_id', $id)->where('status', 'checked')->sum('amount');
 		$allOrders = Order::where('customer_id', $id)->get();
 
@@ -38,7 +38,7 @@ class ClientDashboardController extends Controller
 		});
 		$balance = $deposits - $all_orders;
 
-		//by $requests
+		// By $request
 		$startDate = $request->input('start_date');
 		$endDate = $request->input('end_date');
 
@@ -48,24 +48,25 @@ class ClientDashboardController extends Controller
 			$formattedEndDate = Carbon::createFromFormat('d/m/Y', $endDate)->endOfDay();
 			$query->whereBetween('created_at', [$formattedStartDate, $formattedEndDate]);
 		}
-		$filteredOrders = $query->with('product')->with('company')->get();
+		$filteredOrders = $query->with('product', 'company')->get();
 		$customerOrders = $filteredOrders->mapToGroups(function ($filteredOrder) {
 			$total = (($filteredOrder->amount + $filteredOrder->cfa) * $filteredOrder->sell) + $filteredOrder->ccharges;
-			return [$filteredOrder->company_id => $total];
-		});
-
-		$customerOrders = $customerOrders->map(function ($orders) {
+			return [
+				$filteredOrder->company_id => $total,
+			];
+		})->map(function ($orders) {
 			return $orders->sum();
 		});
 
 		$filteredSell = $filteredOrders->sum(function ($order) {
 			return (($order->amount + $order->cfa) * $order->sell) + $order->ccharges;
 		});
+
 		$data = [
-			'balance' 			=> $balance,
-			'orders'			=> $filteredOrders,
-			'totalSale'			=> $filteredSell,
-			'customerOrders'	=> $customerOrders,
+			'balance' => $balance,
+			'orders' => $filteredOrders,
+			'totalSale' => $filteredSell,
+			'customerOrders' => $customerOrders,
 		];
 
 		return response()->json($data);

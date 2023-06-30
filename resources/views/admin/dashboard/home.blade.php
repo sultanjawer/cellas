@@ -108,8 +108,8 @@
 
 		function fetchInsightByDateRange(startDate, endDate) {
 			var id = $('#selectCustomer').val(); // Get the selected ID value
-			var url = '{{ route("admin.report.customerDashboard", ":id") }}';
-			url = url.replace(':id', encodeURIComponent(id)); // Replace the placeholder with the ID
+			var url = '{{ route("admin.report.customerDashboard", "id") }}';
+			url = url.replace('id', encodeURIComponent(id)); // Replace the placeholder with the ID
 			$.get(url, { start_date: startDate, end_date: endDate })
 			.done(function(data) {
 				displayInsight(data);
@@ -130,8 +130,12 @@
 			ordersTable.clear().draw();
 
 			$.each(data.customerOrders, function(companyId, totalOrders) {
+				var order = data.orders.find(function(order) {
+					return order.company_id === parseInt(companyId);
+				});
+
 				var row = $('<tr>');
-					$('<td>').text(data.orders[companyId].company.company_name).appendTo(row);
+				$('<td>').text(order.company.company_name).appendTo(row);
 				$('<td class="text-right">').text(formatNumber(totalOrders)).appendTo(row);
 				ordersTable.row.add(row);
 			});

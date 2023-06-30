@@ -162,12 +162,11 @@ class ReportDataController extends Controller
 	public function InsightByDateRange(Request $request)
 	{
 		//not affected by $request
-		$payments = Payment::where('validation', 'validated')->get();
+		$payments = Payment::where('validation', 'validated')->with('bank')->get();
 		$deposits = $payments->sum('amount');
-		$bankBalances = $payments->load('bank');
 		$balance = $deposits;
 
-		$balanceInBanks = $bankBalances->groupBy('bank_id')->map(function ($balances) {
+		$balanceInBanks = $payments->groupBy('bank_id')->map(function ($balances) {
 			$bank = $balances->first()->bank;
 			$bankName = $bank->bank_name;
 			$account = $bank->account;
@@ -182,13 +181,16 @@ class ReportDataController extends Controller
 		//by $requests
 		$startDate = $request->input('start_date');
 		$endDate = $request->input('end_date');
+
 		$query = Order::query();
+
 		if ($startDate && $endDate) {
 			$formattedStartDate = Carbon::createFromFormat('d/m/Y', $startDate)->startOfDay();
 			$formattedEndDate = Carbon::createFromFormat('d/m/Y', $endDate)->endOfDay();
 			$query->whereBetween('created_at', [$formattedStartDate, $formattedEndDate]);
 		}
-		$orders = $query->with('company')->with('customer')->with('product')->get();
+
+		$orders = $query->with('company', 'customer', 'product')->get();
 
 		$companyOrders = $orders->groupBy('company_id')->map(function ($orders) {
 			return [
@@ -200,10 +202,13 @@ class ReportDataController extends Controller
 		$totalPurchase = $orders->sum(function ($order) {
 			return (($order->amount + $order->pfa) * $order->buy) + $order->pcharges;
 		});
+
 		$totalSale = $orders->sum(function ($order) {
 			return (($order->amount + $order->cfa) * $order->sell) + $order->ccharge;
 		});
+
 		$totalProfits = $totalSale - $totalPurchase;
+
 		$data = [
 			'balance' 			=> $balance,
 			'totalPurchase'		=> $totalPurchase,
