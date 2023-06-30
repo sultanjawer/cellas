@@ -28,6 +28,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 	Route::get('/', 'HomeController@index')->name('home');
 	// Dashboard
 	Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
+	Route::get('/dashboard/client', 'ClientDashboardController@index')->name('dashboard.client');
+
 
 	// Permissions
 	Route::delete('permissions/destroy', 'PermissionsController@massDestroy')->name('permissions.massDestroy');
@@ -135,6 +137,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 	// report
 	//new in cellas
 	Route::get('report/orders/customerOrderByDate', 'ReportDataController@customerOrderByDate')->name('report.orders.customerOrderByDate');
+	Route::get('report/insightByDateRange/{id}', 'ClientDashboardController@InsightByDateRange')->name('report.customerDashboard');
 
 	//old
 	Route::get('report/orders/data', 'ReportDataController@transactsData')->name('report.orders.data');
@@ -143,6 +146,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 	Route::get('report/deposits/data', 'ReportDataController@depositsData')->name('report.deposits.data');
 	Route::get('report/deposits', 'ReportController@deposit')->name('report.deposits');
 	Route::get('report/insightByDateRange', 'ReportDataController@InsightByDateRange')->name('report.insightByDateRange');
+
 	//user task
 	Route::group(['prefix' => 'task', 'as' => 'task.'], function () {
 

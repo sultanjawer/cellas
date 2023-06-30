@@ -10,15 +10,25 @@
 				<div class="panel" id="productsPanel">
 					<div class="panel-container card-header collapse" id="filterCollapse">
 						<div class="row d-flex justify-content-between" >
-							<div class="form-group col-md-4">
+							<div class="form-group col-md-3">
 								<label for="start_date">Date Filter</label>
 								<div class="input-daterange input-group" id="datepicker-5">
 									<input type="text" class="form-control datepicker dataFilter" id="start_date" name="start_date" value="{{ now()->format('d/m/Y') }}">
 								</div>
 							</div>
-							<div class="form-group col-md-4">
+							<div class="form-group col-md-3">
+								<label for="Company_Filter">Company Filter</label>
+								<select name="Company_Filter" id="Company_Filter" class="mr-2 form-control dataFilter">
+									<option value=""></option>
+									<option value="all">All Company</option>
+									@foreach ($companies as $company)
+										<option value="{{$company->id}}">{{$company->company_name}}</option>
+									@endforeach
+								</select>
+							</div>
+							<div class="form-group col-md-3">
 								<label for="customerFilter">Customer Filter</label>
-								<select class="form-control custom-select"
+								<select class="form-control custom-select dataFilter"
 									name="customerFilter" id="customerFilter">
 									<option ></option>
 									<option value="all">All Customers</option>
@@ -29,7 +39,7 @@
 									@endforeach
 								</select>
 							</div>
-							<div class="form-group col-md-4">
+							<div class="form-group col-md-3">
 								<label for="total_filtered">Total Value Filter</label>
 								<input type="text" class="fw-500 form-control text-right dataFilter" id="total_filtered" name="total_filtered">
 							</div>
@@ -79,6 +89,9 @@
 	$(document).ready(function() {
 		$("#customerFilter").select2({
 			placeholder: "-- Select Customer --",
+		});
+		$("#Company_Filter").select2({
+			placeholder: "-- Select Company --",
 		});
 	});
 </script>
@@ -151,12 +164,13 @@
 		});
 
 		// Fetch and update orders data based on dataFilter
-		function updateDataOrderTable(startDate, filterCustomer) {
+		function updateDataOrderTable(startDate, filterCompany, filterCustomer) {
 			$.ajax({
 				url: '{{ route("admin.report.orders.customerOrderByDate") }}',
 				type: 'GET',
 				data: {
 					start_date: startDate,
+					Company_Filter: filterCompany,
 					customerFilter: filterCustomer,
 				},
 				success: function(response) {
@@ -168,7 +182,7 @@
 							var date = new Date(order.created_at);
 							var formattedDate = date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
 							var customerName = '<a href="{{ route("admin.order.show", ["id" => ":customerId"]) }}">'+order.customer.name+'</a>';
-							customerName = customerName.replace(':customerId', order.customer_id);
+							customerName = customerName.replace(':customerId', order.id);
 
 							var productSymbol = order.product.symbol;
 							var amount = order.amount;
@@ -227,17 +241,24 @@
 		}
 
 		// Listen for changes in the filter inputs
-		$('#start_date, #customerFilter').on('change', function() {
+		$('.dataFilter').on('change', function() {
 			var startDate = $('#start_date').val();
+			var filterCompany = $('#Company_Filter').val();
 			var filterCustomer = $('#customerFilter').val();
-
-			updateDataOrderTable(startDate, filterCustomer);
+			if (filterCompany === 'all') {
+				filterCompany = '';
+			}
+			if (filterCustomer === 'all') {
+				filterCustomer = '';
+			}
+			updateDataOrderTable(startDate, filterCompany,filterCustomer);
 		});
 
 		// Initial data load
 		var startDate = $('#start_date').val();
+		var filterCompany = $('#Company_Filter').val();
 		var filterCustomer = $('#customerFilter').val();
-		updateDataOrderTable(startDate, filterCustomer);
+		updateDataOrderTable(startDate, filterCompany, filterCustomer);
 	});
 </script>
 @endsection

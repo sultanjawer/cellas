@@ -20,7 +20,7 @@ return new class extends Migration
 			$table->decimal('amount', 12, 2)->nullable();
 			$table->string('origin_bank')->nullable();
 			$table->string('origin_account')->nullable();
-			$table->integer('recipient_bank')->nullable();
+			$table->integer('bank_id')->nullable();
 			$table->date('slip_date')->nullable();
 			$table->string('attachment')->nullable();
 			$table->enum('status', ['unchecked', 'checked'])->default('unchecked')->nullable();

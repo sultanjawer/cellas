@@ -51,4 +51,9 @@ class Order extends Model
 	{
 		return $this->hasMany(DesignateBank::class, 'order_id');
 	}
+
+	public function company()
+	{
+		return $this->belongsTo(Companies::class, 'company_id', 'id');
+	}
 }

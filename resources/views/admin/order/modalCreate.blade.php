@@ -145,7 +145,7 @@
 			dropdownParent: $('#modalOrderCreate')
 		});
 		$("#select2Company").select2({
-			placeholder: "-- Select Bank --",
+			placeholder: "-- Select Company --",
 			dropdownParent: $('#modalOrderCreate')
 		});
 	});

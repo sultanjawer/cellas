@@ -26,7 +26,7 @@ class Payment extends Model
 		'origin_bank',
 		'origin_account',
 		'slip_date',
-		'recipient_bank',
+		'bank_id',
 		'status',
 		'validation',
 		'attachment',
@@ -39,6 +39,6 @@ class Payment extends Model
 
 	public function bank()
 	{
-		return $this->belongsTo(Bank::class, 'bank_id');
+		return $this->belongsTo(Bank::class, 'bank_id', 'id');
 	}
 }

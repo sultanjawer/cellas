@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 @section('content')
 	@include('partials.subheader')
-	@include('partials.sysalert')
+	{{-- @include('partials.sysalert') --}}
 
 	<div class="row">
 		<div class="col-lg-4 mb-3">

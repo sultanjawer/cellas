@@ -62,7 +62,15 @@
 						data-filter-tags="home beranda landing informasi berita pesan">
 						<i class="c-sidebar-nav-icon fal fa-analytics">
 						</i>
-						<span class="nav-link-text">Dashboard</span>
+						<span class="nav-link-text">Main Dashboard</span>
+					</a>
+				</li>
+				<li class="c-sidebar-nav-item {{ request()->is('admin/dashboard/client') ? 'active' : '' }}">
+					<a href="{{ route('admin.dashboard.client') }}" class="c-sidebar-nav-link"
+						data-filter-tags="home beranda landing informasi berita pesan">
+						<i class="c-sidebar-nav-icon fal fa-user-crown">
+						</i>
+						<span class="nav-link-text">Client Dashboard</span>
 					</a>
 				</li>
 			@endcan

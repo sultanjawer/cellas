@@ -250,7 +250,7 @@
 									<form action="{{ route('admin.payment.delete', ['id' => 'paymentId']) }}" method="post">
 										<input type="hidden" name="_token" value="{{ csrf_token() }}">
 										<input type="hidden" name="_method" value="delete">
-										<a href="{{ route('admin.payment.edit', ['id' => ':paymentId']) }}" class="dropdown-item fw-500">
+										<a href="{{ route('admin.payment.edit', ['id' => 'paymentId']) }}" class="dropdown-item fw-500">
 											<i class="fal fa-edit mr-1"></i>Edit
 										</a>
 										<button class="dropdown-item" type="submit">

@@ -60,7 +60,7 @@ class PaymentController extends Controller
 
 		$payment->customer_id = $request->input('customer_id');
 		$payment->company_id = $request->input('company_id');
-		$payment->recipient_bank = $request->input('recipient_bank');
+		$payment->bank_id = $request->input('bank_id');
 		$payment->origin_bank = $request->input('origin_bank');
 		$payment->origin_account = $request->input('origin_account');
 		$payment->slip_date = $request->input('slip_date');
@@ -119,7 +119,7 @@ class PaymentController extends Controller
 
 		$payment->customer_id = $request->input('customer_id');
 		$payment->company_id = $request->input('company_id');
-		$payment->recipient_bank = $request->input('recipient_bank');
+		$payment->bank_id = $request->input('bank_id');
 		$payment->origin_bank = $request->input('origin_bank');
 		$payment->origin_account = $request->input('origin_account');
 		$payment->slip_date = $request->input('slip_date');

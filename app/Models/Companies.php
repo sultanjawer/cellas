@@ -27,4 +27,9 @@ class Companies extends Model
 	{
 		return $this->hasMany(Bank::class, 'company_id');
 	}
+
+	public function order()
+	{
+		return $this->hasMany(Order::class, 'company_id', 'id');
+	}
 }

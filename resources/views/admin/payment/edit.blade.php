@@ -57,10 +57,10 @@
 								</div>
 								<div class="form-group col-md-6">
 									<label for="select2Bank">Designated Bank</label>
-									<select class="form-control" id="select2Bank" name="recipient_bank">
+									<select class="form-control" id="select2Bank" name="bank_id">
 										<option value=""></option>
 										@foreach ($banks as $bank)
-											<option value="{{ $bank->id }}" {{ old('recipient_bank', $payment->recipient_bank) == $bank->id ? 'selected' : '' }}>
+											<option value="{{ $bank->id }}" {{ old('bank_id', $payment->bank_id) == $bank->id ? 'selected' : '' }}>
 												{{$bank->bank_name}}, {{$bank->account}} - {{$bank->acc_name}}
 											</option>
 										@endforeach

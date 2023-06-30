@@ -1,8 +1,8 @@
 @extends('layouts.admin')
 @section('content')
 	@include('partials.subheader')
-	@include('partials.sysalert')
-
+	{{-- @include('partials.sysalert') --}}
+	@can('transaction_history')
 	<div class="row">
 		<div class="col-lg-4 mb-3">
 			<div class="card">
@@ -109,7 +109,7 @@
 			</div>
 		</div>
 	</div>
-
+	@endcan
 @endsection
 
 {{-- script section --}}

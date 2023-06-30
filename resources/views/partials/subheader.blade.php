@@ -3,7 +3,7 @@
 		<i class="subheader-icon {{$heading_class}}"></i> {{ ($page_title ?? '') }}
 		<span class="fw-300"> {{ ($page_subtitle ?? '') }} </span>
 		{{-- <sup class="badge badge-primary fw-500">STICKER</sup> --}}
-		<small> {{ ($page_desc ?? '') }} </small>
+		<small class="d-none d-md-block"> {{ ($page_desc ?? '') }} </small>
 	</h1>
 	<div class="js-get-date"></div>
 </div>

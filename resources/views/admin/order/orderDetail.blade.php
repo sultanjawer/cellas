@@ -3,7 +3,7 @@
 @endsection
 @section('content')
 	@include('partials.subheader')
-
+	@can('order_show')
 	<div class="row d-flex justify-content-between">
 		<div class="col-md-3 col-xl-4">
 		</div>
@@ -72,9 +72,9 @@
 									<tbody>
 										@foreach ($banks as $bank)
 											<tr>
-												<td>{{$bank->bank->bank_name}}</td>
-												<td>{{$bank->bank->account}}</td>
-												<td>{{$bank->bank->acc_name}}</td>
+												<td>{{$bank->bank->bank_name ?? ''}}</td>
+												<td>{{$bank->bank->account ?? ''}}</td>
+												<td>{{$bank->bank->acc_name ?? ''}}</td>
 											</tr>
 										@endforeach
 									</tbody>
@@ -88,6 +88,7 @@
 		<div class="col-md-3 col-xl-4">
 		</div>
 	</div>
+	@endcan
 @endsection
 
 

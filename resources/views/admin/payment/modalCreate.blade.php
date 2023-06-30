@@ -58,7 +58,7 @@
 						</div>
 						<div class="form-group col-md-6">
 							<label for="selectBankPayment">Designated Bank</label>
-							<select class="form-control" id="selectBankPayment" name="recipient_bank">
+							<select class="form-control" id="selectBankPayment" name="bank_id">
 								<option value=""></option>
 								@foreach ($banks as $bank)
 									<option value="{{$bank->id}}">{{$bank->bank_name}}, {{$bank->account}} - {{$bank->acc_name}}</option>

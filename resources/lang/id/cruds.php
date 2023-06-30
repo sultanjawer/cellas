@@ -97,6 +97,18 @@ return [
 		'can_create'     => '1',
 		'level'          => '1',
 	],
+	'transactionHistory' => [
+		'title'          => 'Transaction History',
+		'title_lang'     => 'Transaction History',
+		'is_parent'      => '1',
+		'is_hidden'      => '0',
+		'can_view'       => '0',
+		'can_edit'       => '0',
+		'can_delete'     => '0',
+		'can_access'     => '1',
+		'can_create'     => '0',
+		'level'          => '1',
+	],
 	'dataMaster' => [
 		'title'          => 'Master Data',
 		'title_lang'     => 'Master Data',

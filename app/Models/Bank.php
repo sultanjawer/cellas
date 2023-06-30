@@ -29,4 +29,9 @@ class Bank extends Model
 	{
 		return $this->belongsTo(Companies::class, 'company_id');
 	}
+
+	public function payment()
+	{
+		return $this->hasMany(Payment::class, 'bank_id', 'id');
+	}
 }
