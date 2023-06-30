@@ -2,6 +2,7 @@
 @section('styles')
 @endsection
 @section('content')
+@can('dashboard_access')
 	@include('partials.subheader')
 	{{-- @include('partials.sysalert') --}}
 	<div class="row d-flex justify-content-between mb-3">
@@ -82,7 +83,7 @@
 		</div>
 	</div>
 @endsection
-
+@endcan
 @section('scripts')
 @parent
 
