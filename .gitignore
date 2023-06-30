@@ -22,3 +22,7 @@ Homestead.json
 /.vagrant
 .phpunit.result.cache
 new 9.txt
+database.zip
+public.zip
+public/media.zip
+storage/logs/laravel.log

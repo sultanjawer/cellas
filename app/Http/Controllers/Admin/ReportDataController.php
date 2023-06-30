@@ -162,13 +162,19 @@ class ReportDataController extends Controller
 	public function InsightByDateRange(Request $request)
 	{
 		//not affected by $request
-		$deposits = Payment::sum('amount');
+		$payments = Payment::where('validation', 'validated')->get();
+		$deposits = $payments->sum('amount');
+		$bankBalances = $payments->load('bank');
 		$balance = $deposits;
-		$bankBalances = Payment::with('bank')->get();
 
 		$balanceInBanks = $bankBalances->groupBy('bank_id')->map(function ($balances) {
+			$bank = $balances->first()->bank;
+			$bankName = $bank->bank_name;
+			$account = $bank->account;
+			$combined = $bankName . ' - ' . $account;
+
 			return [
-				'bank_name' => $balances->first()->bank->bank_name,
+				'bank_name' => $combined,
 				'balance' => $balances->sum('amount')
 			];
 		});
