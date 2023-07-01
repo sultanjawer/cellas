@@ -34,7 +34,7 @@ class OrderController extends Controller
 		$heading_class = 'fal fa-receipt';
 		$page_desc = 'List of Customer Orders';
 
-		$orders = Order::orderByDesc('created_at')->get();
+		$orders = Order::with(['customer', 'product', 'company'])->orderByDesc('created_at')->get();
 		$customers = Customer::select('id', 'name')->get();
 		$deposits = Payment::all();
 		$products = Product::select('id', 'symbol', 'currency')->get();

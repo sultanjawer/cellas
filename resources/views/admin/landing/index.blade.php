@@ -2,216 +2,199 @@
 @section('content')
 	@include('partials.subheader')
 	@can('landing_access')
+		@php($unreadmsg = \App\Models\QaTopic::unreadCount())
+		@php($msgs = \App\Models\QaTopic::unreadMsg())
+		<div class="row mb-5">
+			<div class="col text-center">
+				<h1 class="hidden-md-down">Welcome, {{ Auth::user()->data_user->company_name ?? Auth::user()->name }}</h1><br>
+				<h2 class="display-4 hidden-sm-up">Hello, <span class="fw-700">{{ Auth::user()->name }}</span></h2>
+				<h4 class="hidden-md-down">
+					<p class="text-muted">{!! $quote !!}</p>
+				</h4>
+			</div>
+		</div>
+
 		<!-- Page Content -->
-		<div class="row d-flex justify-content-between mb-3">
-			<div></div>
+		{{-- <div class="row">
+			<div class="col-lg-7">
+				<div id="panel-1" class="panel">
+					<div class="panel-hdr">
+						<h2>
+							<i class="subheader-icon fal fa-rss mr-1 text-muted"></i>
+							<span class="text-primary fw-700" style="text-transform: uppercase">BERITA</span>
+						</h2>
+						<div class="panel-toolbar">
+							<a href="{{ route('admin.posts.index') }}" data-toggle="tooltip" title
+								data-original-title="Lihat semua Feeds" class="btn btn-xs btn-primary waves-effect waves-themed"
+								type="button" href="/">Lihat semua</a>
+						</div>
+					</div>
+					<div class="panel-container show">
+						<div class="panel-content p-0">
+							<ul class="notification">
+								@foreach ($posts as $post)
+									<li>
+										<a href="{{ route('admin.posts.show', $post['id']) }}"
+											class="d-flex align-items-center">
+
+											<span class="d-flex flex-column flex-1 ml-1">
+												<span class="fw-700 fs-md text-primary" style="text-transform: uppercase">
+													{{ $post['title'] }}
+												</span>
+												<span class="name fs-xs text-muted small mb-2">
+													create by: {{ $post->user->name }} |
+													@if ($post['created_at']->isToday())
+														@if ($post['created_at']->diffInHours(date('Y-m-d H:i:s')) > 1)
+															<span
+																class="fs-nano text-muted mt-1">{{ $post['created_at']->diffInHours(date('Y-m-d H:i:s')) }}
+																jam yang lalu</span>
+														@else
+															@if ($post['created_at']->diffInMinutes(date('Y-m-d H:i:s')) > 1)
+																<span
+																	class="fs-nano text-muted mt-1">{{ $post['created_at']->diffInMinutes(date('Y-m-d H:i:s')) }}
+																	menit yang lalu</span>
+															@else
+																<span
+																	class="fs-nano text-muted mt-1">{{ $post['created_at']->diffInSeconds(date('Y-m-d H:i:s')) }}
+																	detik yang lalu</span>
+															@endif
+														@endif
+													@else
+														@if ($post['created_at']->isYesterday())
+															<span class="fs-nano text-muted mt-1">Kemarin</span>
+														@else
+															<span
+																class="fs-nano text-muted mt-1">{{ $post['created_at'] }}</span>
+														@endif
+													@endif
+													| {{ ($post->category->name ?? '') }}
+												</span>
+												<span class="text-muted">{{ $post['exerpt'] }}</span>
+											</span>
+										</a>
+									</li>
+								@endforeach
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
 			<div class="col-lg-5">
-				<div class="form-group row">
-					<label for="" class="col-form-label form-label col-md-3 text-left">Report Date</label>
-					<div class="col-md-9">
-						<div class="input-daterange input-group" id="datepicker-5">
-							<input type="text" class="form-control form-control-sm datepicker dateFilter" id="start_date" name="start_date" value="{{ $endDate ?? now()->format('d/m/Y') }}">
-							<div class="input-group-append input-group-prepend">
-								<span class="input-group-text"><i class="fal fa-ellipsis-h"></i></span>
-							</div>
-							<input type="text" class="form-control form-control-sm datepicker dateFilter" id="end_date" name="end_date" value="{{ $endDate ?? now()->format('d/m/Y') }}">
-						</div>
-						<label for="" class="help-block">Select Date to display the report by date.</label>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-lg-3 col-md-6">
-				<div id="new_request" class="p-3 bg-warning-500 rounded overflow-hidden position-relative text-white mb-g">
-					<div class="">
-						<h1 class="d-block l-h-n m-0 fw-500" data-toggle="tooltip" title data-original-title="Your Profits for selected periodes">
-							<span id="Totalbalance"></span>
-							<small class="m-0 l-h-n">Deposit Balance (until today)</small>
-						</h1>
-					</div>
-					<i class="fal fa-chart-bar  position-absolute pos-right pos-bottom opacity-25 mb-n1 mr-n1" style="font-size:4rem"></i>
-				</div>
-			</div>
-			<div class="col-lg-3 col-md-6">
-				<div id="new_request" class="p-3 bg-danger-300 rounded overflow-hidden position-relative text-white mb-g">
-					<div class="">
-						<h1 class=" d-block l-h-n m-0 fw-500" data-toggle="tooltip" title data-original-title="Your Profits for selected periodes">
-							<span id="totalPurchase"></span>
-							<small class="m-0 l-h-n">Purchase (Rupiah)</small>
-						</h1>
-					</div>
-					<i class="fal fa-receipt fa-flip-horizontal position-absolute pos-right pos-bottom opacity-25 mb-n1 mr-n1" style="font-size:4rem"></i>
-				</div>
-			</div>
-			<div class="col-lg-3 col-md-6">
-				<div id="new_request" class="p-3 bg-info-300 rounded overflow-hidden position-relative text-white mb-g">
-					<div class="">
-						<h1 class=" d-block l-h-n m-0 fw-500" data-toggle="tooltip" title data-original-title="Your Profits for selected periodes">
-							<span id="totalSale"></span>
-							<small class="m-0 l-h-n">Sells (Rupiah)</small>
-						</h1>
-					</div>
-					<i class="fal fa-receipt fa-flip-horizontal position-absolute pos-right pos-bottom opacity-25 mb-n1 mr-n1" style="font-size:4rem"></i>
-				</div>
-			</div>
-			<div class="col-lg-3 col-md-6">
-				<div id="new_request" class="p-3 bg-success-500 rounded overflow-hidden position-relative text-white mb-g">
-					<div class="">
-						<h1 class=" d-block l-h-n m-0 fw-500" data-toggle="tooltip" title data-original-title="Your Profits for selected periodes">
-							<span id="totalProfits"></span>
-							<small class="m-0 l-h-n">Profits (Rupiah)</small>
-						</h1>
-					</div>
-					<i class="fal fa-piggy-bank fa-flip-horizontal position-absolute pos-right pos-bottom opacity-25 mb-n1 mr-n1" style="font-size:4rem"></i>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-6">
-				<div class="panel" id="panel-1">
+				<div id="panel-2" class="panel">
 					<div class="panel-hdr">
-						<h2>Balance in Banks</h2>
+						<h2>
+							<i class="subheader-icon fal fa-envelope mr-1"></i><span class="color-warning-700 fw-700"
+								style="text-transform:uppercase">Pesan baru</span>
+						</h2>
+						<div class="panel-toolbar">
+							<a href="{{ route('admin.messenger.index') }}" data-toggle="tooltip" title
+								data-original-title="Lihat semua pesan" class="btn btn-xs btn-warning waves-effect waves-themed"
+								type="button" href="/">Lihat</a>
+						</div>
 					</div>
 					<div class="panel-container show">
-						<div class="panel-content">
-							<table class="table table-hover table-sm table-bordered w-100" id="bankBalance">
-								<thead>
-									<th>Bank</th>
-									<th>Balance</th>
-								</thead>
-								<tbody>
-
-								</tbody>
-							</table>
+						<div class="panel-content p-0">
+							<ul class="notification">
+								@foreach ($msgs as $item)
+									<li>
+										<a href="{{ route('admin.messenger.showMessages', $item['id']) }}"
+											class="d-flex align-items-center">
+											<span class="mr-2">
+												@php($user = \App\Models\User::getUserById($item['sender']))
+												@if (!empty($user[0]->data_user->logo))
+													<img src="{{ Storage::disk('public')->url($user[0]->data_user->logo) }}"
+														class="profile-image rounded-circle" alt="">
+												@else
+													<img src="{{ asset('/img/favicon.png') }}"
+														class="profile-image rounded-circle" alt="">
+												@endif
+											</span>
+											<span class="d-flex flex-column flex-1 ml-1">
+												<span class="name">{{ $user[0]->name }}<span
+														class="badge badge-danger fw-n position-absolute pos-top pos-right mt-1">NEW</span></span>
+												<span class="msg-a fs-sm">{{ $item['subject'] }}</span>
+												<span class="msg-b fs-xs">{{ $item['content'] }}</span>
+												@if ($item['create_at']->isToday())
+													@if ($item['create_at']->diffInHours(date('Y-m-d H:i:s')) > 1)
+														<span
+															class="fs-nano text-muted mt-1">{{ $item['create_at']->diffInHours(date('Y-m-d H:i:s')) }}
+															jam yang lalu</span>
+													@else
+														@if ($item['create_at']->diffInMinutes(date('Y-m-d H:i:s')) > 1)
+															<span
+																class="fs-nano text-muted mt-1">{{ $item['create_at']->diffInMinutes(date('Y-m-d H:i:s')) }}
+																menit yang lalu</span>
+														@else
+															<span
+																class="fs-nano text-muted mt-1">{{ $item['create_at']->diffInSeconds(date('Y-m-d H:i:s')) }}
+																detik yang lalu</span>
+														@endif
+													@endif
+												@else
+													@if ($item['create_at']->isYesterday())
+														<span class="fs-nano text-muted mt-1">Kemarin</span>
+													@else
+														<span class="fs-nano text-muted mt-1">{{ $item['create_at'] }}</span>
+													@endif
+												@endif
+											</span>
+										</a>
+									</li>
+								@endforeach
+							</ul>
 						</div>
 					</div>
-
 				</div>
-			</div>
-			<div class="col-md-6">
-				<div class="panel" id="panel-2">
+				@if (Auth::user()->roles[0]->title == 'Admin' || Auth::user()->roles[0]->title == 'Pejabat' || Auth::user()->roles[0]->title == 'Verifikator')
+				<div id="panel-2" class="panel">
 					<div class="panel-hdr">
-						<h2>Sales by Company</h2>
+						<h2>
+							<i class="subheader-icon fal fa-ballot-check mr-1"></i><span class="color-info-700 fw-700"
+								style="text-transform:uppercase">Pengajuan Baru</span>
+						</h2>
+						<div class="panel-toolbar">
+							<a href="{{ route('verification.data') }}" data-toggle="tooltip" title
+								data-original-title="Lihat semua pengajuan" class="btn btn-xs btn-warning waves-effect waves-themed"
+								type="button" href="/">Lihat</a>
+						</div>
 					</div>
 					<div class="panel-container show">
-						<div class="panel-content">
-							<table class="table table-sm table-hover table-bordered w-100" id="salesByCompany">
-								<thead>
-									<th>Company</th>
-									<th>Total</th>
-								</thead>
-								<tbody>
-
-								</tbody>
-							</table>
+						<div class="panel-content p-0">
+							<ul class="notification">
+								@foreach ($newpengajuan as $item)
+									<li>
+										<a href="{{ route('verification.data.check', [$item->id]) }}"  class="d-flex align-items-center show-child-on-hover">
+											<span class="mr-2">
+												@if (!empty($item->data_user->logo))
+													<img src="{{ Storage::disk('public')->url($item->data_user->logo) }}"
+														class="profile-image rounded-circle" alt="">
+												@else
+													<img src="{{ asset('/img/avatars/farmer.png') }}"
+														class="profile-image rounded-circle" alt="">
+												@endif
+											</span>
+											<span class="d-flex flex-column flex-1">
+												<span class="name">{{ $item->datauser->company_name }} <span
+													class="badge badge-success fw-n position-absolute pos-top pos-right mt-1">NEW</span></span>
+												<span class="msg-a fs-sm">
+													{{ $item->no_pengajuan }}
+												</span>
+												<span class="fs-nano text-muted mt-1">{{ $item->created_at->diffForHumans() }}</span>
+											</span>
+										</a>
+									</li>
+								@endforeach
+							</ul>
 						</div>
 					</div>
-
 				</div>
+				@endif
 			</div>
-		</div>
-		<!-- end Page Content -->
+		</div> --}}
+		<!-- Page Content -->
 	@endcan
 @endsection
 @section('scripts')
 	@parent
-	<script>
-		$(document).ready(function() {
-			$('.datepicker').datepicker({
-				format: 'dd/mm/yyyy',
-				autoclose: true
-			});
 
-			var bankBalanceTable = $('#bankBalance').DataTable(getDataTableConfig([[1, 'desc']]));
-			var salesByCompanyTable = $('#salesByCompany').DataTable(getDataTableConfig([[1, 'asc']]));
-
-			fetchInsightByDateRange($('#start_date').val(), $('#end_date').val());
-			$('.dateFilter').on('change', function() {
-				fetchInsightByDateRange($('#start_date').val(), $('#end_date').val());
-			});
-
-			function fetchInsightByDateRange(startDate, endDate) {
-				var url = '{{ route("admin.report.insightByDateRange") }}';
-				$.get(url, { start_date: startDate, end_date: endDate })
-				.done(function(data) {
-					displayInsight(data);
-				})
-				.fail(function(error) {
-					console.error('Error:', error);
-				});
-			}
-
-			function displayInsight(data) {
-				var formattedBalance = formatNumber(data.balance);
-				var formattedPurchase = formatNumber(data.totalPurchase);
-				var formattedOrders = formatNumber(data.totalSale);
-				var formattedProfits = formatNumber(data.totalProfits);
-
-				$('#Totalbalance').text(formattedBalance);
-				$('#totalPurchase').text(formattedPurchase);
-				$('#totalSale').text(formattedOrders);
-				$('#totalProfits').text(formattedProfits);
-
-				var bankBalanceTable = $('#bankBalance').DataTable();
-				bankBalanceTable.clear().draw();
-				$.each(data.balanceInBanks, function(bankId, balanceData) {
-					var bankName = balanceData.bank_name;
-					var formattedBalance = formatNumber(balanceData.balance);
-
-					var row = $('<tr>');
-					$('<td>').text(bankName).appendTo(row);
-					$('<td class="text-right">').text(formattedBalance).appendTo(row);
-					bankBalanceTable.row.add(row);
-				});
-				bankBalanceTable.draw();
-
-				var salesByCompanyTable = $('#salesByCompany').DataTable();
-				salesByCompanyTable.clear().draw();
-				$.each(data.companyOrders, function(companyId, orderData) {
-					var companyName = orderData.company_name;
-					var formattedTotalAmount = formatNumber(orderData.total_amount);
-
-					var row = $('<tr>');
-					$('<td>').text(companyName).appendTo(row);
-					$('<td class="text-right">').text(formattedTotalAmount).appendTo(row);
-					salesByCompanyTable.row.add(row);
-				});
-				salesByCompanyTable.draw();
-			}
-
-			//number formatter
-			function formatNumber(number) {
-				return parseFloat(number).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-			}
-
-			//dataTable configuration
-			function getDataTableConfig(order) {
-				return {
-				responsive: true,
-				lengthChange: true,
-				pageLength: 10,
-				// order: order,
-				dom:
-					'<"row mb-3"<"col-sm-12 col-md-6 d-flex align-items-center justify-content-start"f><"col-sm-12 col-md-6 d-flex align-items-center justify-content-end"lB>>' +
-					'<"row"<"col-sm-12"tr>>' +
-					'<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-				buttons: [
-					{
-					extend: 'excelHtml5',
-					text: '<i class="fa fa-file-excel"></i>',
-					titleAttr: 'Generate Excel',
-					className: 'btn-outline-success btn-xs btn-icon ml-3 mr-1'
-					},
-					{
-					extend: 'print',
-					text: '<i class="fa fa-print"></i>',
-					titleAttr: 'Print Table',
-					className: 'btn-outline-primary btn-xs btn-icon mr-1'
-					}
-				]
-				};
-			}
-		});
-	</script>
 @endsection

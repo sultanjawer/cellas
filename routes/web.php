@@ -27,7 +27,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 	// landing
 	Route::get('/', 'HomeController@index')->name('home');
 	// Dashboard
-	Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
+	Route::get('/dashboard/main', 'DashboardController@index')->name('dashboard.main');
 	Route::get('/dashboard/client', 'ClientDashboardController@index')->name('dashboard.client');
 
 

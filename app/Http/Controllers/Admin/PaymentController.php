@@ -32,7 +32,7 @@ class PaymentController extends Controller
 		$companies = Companies::all();
 		$banks = Bank::select('id', 'bank_name', 'account', 'acc_name')->get();
 
-		$payments = Payment::all();
+		$payments = Payment::with('customer')->get();
 		// $checkedPayments = Payment::where('status', '1')->sum('amount');
 
 		return view('admin.payment.index', compact('module_name', 'page_title', 'page_subtitle', 'page_heading', 'heading_class', 'page_desc', 'payments', 'customers', 'currencies', 'banks', 'companies'));

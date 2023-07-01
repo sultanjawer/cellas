@@ -25,6 +25,18 @@ return [
 		'can_create'     => '0',
 		'level'          => '0',
 	],
+	'mainDashboard' => [
+		'title'          => 'Main Dashboard',
+		'title_lang'     => 'Main Dashboard',
+		'is_parent'      => '1',
+		'is_hidden'      => '0',
+		'can_view'       => '0',
+		'can_edit'       => '0',
+		'can_delete'     => '0',
+		'can_access'     => '1',
+		'can_create'     => '0',
+		'level'          => '0',
+	],
 	'dashboardAdmin' => [
 		'title'          => 'Realisation & Verification',
 		'title_lang'     => 'Realisasi & Verifikasi',

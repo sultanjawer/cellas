@@ -55,16 +55,28 @@
 			</ul>
 		</div>
 		<ul id="js-nav-menu" class="nav-menu">
+			@can('landing_access')
+			<li class="c-sidebar-nav-item {{ request()->is('admin') ? 'active' : '' }}">
+				<a href="{{ route('admin.home') }}" class="c-sidebar-nav-link"
+					data-filter-tags="home beranda landing informasi berita pesan">
+					<i class="c-sidebar-nav-icon fal fa-home">
+					</i>
+					<span class="nav-link-text">Home</span>
+				</a>
+			</li>
+			@endcan
 			{{-- landing / beranda --}}
 			@can('dashboard_access')
-				<li class="c-sidebar-nav-item {{ request()->is('admin') ? 'active' : '' }}">
-					<a href="{{ route('admin.home') }}" class="c-sidebar-nav-link"
+				@can('main_dashboard_access')
+				<li class="c-sidebar-nav-item {{ request()->is('admin/dashboard/main') ? 'active' : '' }}">
+					<a href="{{ route('admin.dashboard.main') }}" class="c-sidebar-nav-link"
 						data-filter-tags="home beranda landing informasi berita pesan">
 						<i class="c-sidebar-nav-icon fal fa-analytics">
 						</i>
 						<span class="nav-link-text">Main Dashboard</span>
 					</a>
 				</li>
+				@endcan
 				<li class="c-sidebar-nav-item {{ request()->is('admin/dashboard/client') ? 'active' : '' }}">
 					<a href="{{ route('admin.dashboard.client') }}" class="c-sidebar-nav-link"
 						data-filter-tags="home beranda landing informasi berita pesan">
