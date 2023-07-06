@@ -10,16 +10,20 @@
 				<div class="panel" id="productsPanel">
 					<div class="panel-container card-header collapse" id="filterCollapse">
 						<div class="row d-flex justify-content-between" >
-							<div class="col-md-3">
+							<div class="col-md-4">
 								<div class="form-group">
 									<label for="" class="col-form-label form-label">Date Filter</label>
 									<div class="input-daterange input-group" id="datepicker-5">
-										<input type="text" class="form-control datepicker dataFilter" id="start_date" name="start_date" value="{{ now()->format('d/m/Y') }}">
+										<input type="text" class="form-control form-control-sm datepicker dataFilter" id="start_date" name="start_date" value="{{ $endDate ?? now()->format('d/m/Y') }}">
+										<div class="input-group-append input-group-prepend">
+											<span class="input-group-text"><i class="fal fa-ellipsis-h"></i></span>
+										</div>
+										<input type="text" class="form-control form-control-sm datepicker dataFilter" id="end_date" name="end_date" value="{{ $endDate ?? now()->format('d/m/Y') }}">
 									</div>
 									<label for="" class="help-block">Select Date to display the report by date.</label>
 								</div>
 							</div>
-							<div class="col-md-3">
+							<div class="col-md-4">
 								<div class="form-group">
 									<label for="customerFilter" class="col-form-label form-label">Customer Filter</label>
 									<select class="form-control custom-select dataFilter"
@@ -35,7 +39,7 @@
 									<label for="" class="help-block">Select Date to display the report by date.</label>
 								</div>
 							</div>
-							<div class="col-md-3">
+							<div class="col-md-4">
 								<div class="form-group">
 									<label for="" class="col-form-label form-label">Company Filter</label>
 										<select name="Company_Filter" id="Company_Filter" class="mr-2 form-control dataFilter">
@@ -61,7 +65,7 @@
 									<span class="help-block">filter the data based on the bank account to which the customer made transfers.</span>
 								</div>
 							</div>
-							<div class="col-md-4">
+							<div class="col-md-3">
 								<div class="form-group">
 									<label for="" class="col-form-label form-label">Status Filter</label>
 										<select name="filter_status" id="filter_status" class="mr-2 form-control dataFilter">
@@ -73,7 +77,7 @@
 									<label for="" class="help-block">Filter status.</label>
 								</div>
 							</div>
-							<div class="col-md-4">
+							<div class="col-md-3">
 								<div class="form-group">
 									<label for="" class="col-form-label form-label">Validation Filter</label>
 										<select name="validation_Filter" id="validation_Filter" class="mr-2 form-control dataFilter">
@@ -85,7 +89,7 @@
 									<label for="" class="help-block">for customer payment validation.</label>
 								</div>
 							</div>
-							<div class="col-md-4">
+							<div class="col-md-3">
 								<div class="form-group">
 									<label for="" class="col-form-label form-label">Total Filtered</label>
 									<input type="text" class="fw-500 form-control text-right" id="total_checked" name="total_checked" readonly>
@@ -168,9 +172,9 @@
 				{
 					text: '<i class="fa fa-cash-register"></i>',
 					titleAttr: 'Add New Payment',
-					className: 'btn btn-info btn-sm btn-icon ',
+					className: 'btn btn-info btn-sm btn-icon',
 					action: function(e, dt, node, config) {
-						$('#modalCreatePayment').modal('show'); // Replace #myModal with the ID of your modal element
+						window.location.href = "{{ route('admin.payment.create') }}";
 					}
 				}
 			],
@@ -187,12 +191,13 @@
 		});
 
 		// Fetch and update orders data based on date range
-		function updatepaymentsTable(startDate, filterCustomer,filterCompany, filterAccount,filterStatus, filterValid) {
+		function updatepaymentsTable(startDate, endDate, filterCustomer,filterCompany, filterAccount,filterStatus, filterValid) {
 			$.ajax({
 			url: '{{ route("admin.report.deposits.data") }}',
 			type: 'GET',
 			data: {
 				start_date: startDate,
+				end_date: endDate,
 				customerFilter: filterCustomer,
 				Company_Filter: filterCompany,
 				Account_Filter: filterAccount,
@@ -283,16 +288,18 @@
 
 		// Trigger initial data update on page load
 		var startDate = $('#start_date').val();
+		var endDate = $('#end_date').val();
 		var filterCompany = $('#Company_Filter').val();
 		var filterCustomer = $('#customerFilter').val();
 		var filterAccount = $('#Account_Filter').val();
 		var filterStatus = $('#filter_status').val();
 		var filterValid = $('#validation_Filter').val();
-		updatepaymentsTable(startDate, filterCustomer,filterCompany, filterAccount, filterStatus, filterValid);
+		updatepaymentsTable(startDate, endDate, filterCustomer,filterCompany, filterAccount, filterStatus, filterValid);
 
 		// Fetch and update status data when the datafilter changes
 		$('.dataFilter').on('change', function() {
 			var startDate = $('#start_date').val();
+			var endDate = $('#end_date').val();
 			var filterCustomer = $('#customerFilter').val();
 			var filterCompany = $('#Company_Filter').val();
 			var filterAccount = $('#Account_Filter').val();
@@ -313,7 +320,7 @@
 			if (filterValid === 'all') {
 				filterValid = '';
 			}
-			updatepaymentsTable(startDate, filterCustomer,filterCompany, filterAccount, filterStatus, filterValid);
+			updatepaymentsTable(startDate, endDate, filterCustomer,filterCompany, filterAccount, filterStatus, filterValid);
 		});
 	});
 </script>

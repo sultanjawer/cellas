@@ -53,7 +53,7 @@
 									<th>Date</th>
 									<th>Product</th>
 									<th>Amt</th>
-									<th>Buh</th>
+									<th>Buy</th>
 									<th>Sell</th>
 									<th>PFA</th>
 									<th>CFA</th>
@@ -193,29 +193,29 @@
 							var pcharges = order.pcharges;
 							var ccharges = order.ccharges;
 							var editDeleteButtons = `
-							<div class="dropdown">
-								<a href="javascript:void(0)" data-toggle="dropdown">
-									<i class="fas fa-ellipsis-v"></i>
-								</a>
-								<div class="dropdown-menu dropdown-menu-right">
-									<form action="{{ route('admin.order.delete', ['id' => 'orderId']) }}" method="post">
-										<input type="hidden" name="_token" value="{{ csrf_token() }}">
-										<input type="hidden" name="_method" value="delete">
-										<a href="{{ route('admin.customer.transactions', ['id' => 'customerId']) }}" class="dropdown-item fw-500">
-											<i class="far fa-history mr-1"></i>Transaction Histroy
-										</a>
-										<a href="{{ route('admin.order.edit', ['id' => 'orderId']) }}" class="dropdown-item fw-500">
-											<i class="fal fa-edit mr-1"></i>Edit
-										</a>
-										<button class="dropdown-item" type="submit">
-											<i class="fal fa-trash mr-1"></i>Delete
-										</button>
-									</form>
+								<div class="dropdown">
+									<a href="javascript:void(0)" data-toggle="dropdown">
+										<i class="fas fa-ellipsis-v"></i>
+									</a>
+									<div class="dropdown-menu dropdown-menu-right">
+										<form action="{{ route('admin.order.delete', ['id' => 'orderId']) }}" method="post">
+											<input type="hidden" name="_token" value="{{ csrf_token() }}">
+											<input type="hidden" name="_method" value="delete">
+											<a href="{{ route('admin.customer.transactions', ['id' => 'customerId']) }}" class="dropdown-item fw-500">
+												<i class="far fa-history mr-1"></i>Transaction Histroy
+											</a>
+											<a href="{{ route('admin.order.edit', ['id' => 'orderId']) }}" class="dropdown-item fw-500">
+												<i class="fal fa-edit mr-1"></i>Edit
+											</a>
+											<button class="dropdown-item" type="submit">
+												<i class="fal fa-trash mr-1"></i>Delete
+											</button>
+										</form>
+									</div>
 								</div>
-							</div>
-						`;
+							`;
 
-						editDeleteButtons = editDeleteButtons.replace(/customerId/g, order.customer_id).replace(/orderId/g, order.id);
+							editDeleteButtons = editDeleteButtons.replace(/customerId/g, order.customer_id).replace(/orderId/g, order.id);
 							dataOrder.row.add([
 								customerName,
 								formattedDate,

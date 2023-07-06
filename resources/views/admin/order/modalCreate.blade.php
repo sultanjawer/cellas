@@ -56,33 +56,42 @@
 						<div class="col">
 							<table class="table table-sm table-bordered table-hover w-100">
 								<thead class="text-muted text-center">
+									@can('main_dashboard_access')
 									<th>Purchased</th>
+									@endcan
 									<th>Desc</th>
 									<th>Sell</th>
 								</thead>
 								<tbody>
 									<tr class="align-items-center">
+										@can('main_dashboard_access')
 										<td>
+
 											<input type="number" step="0.01" class="form-control form-control-sm" placeholder="purchased rates" name="buy" id="buy" />
 										</td>
+											@endcan
 										<td class="text-center text-muted">-Rates (Rp)-</td>
 										<td>
 											<input type="number" step="0.01" class="form-control form-control-sm" placeholder="sell rates" name="sell" id="sell" />
 										</td>
 									</tr>
 									<tr class="align-items-center">
+											@can('main_dashboard_access')
 										<td>
 											<input type="number" step="0.01" class="form-control form-control-sm" placeholder="purchased charges" name="pcharges" id="pcharges" />
 										</td>
+											@endcan
 										<td class="text-center text-muted">-Charges (Rp)-</td>
 										<td>
 											<input type="number" step="0.01" class="form-control form-control-sm" placeholder="customer charges" name="ccharges" id="ccharges" />
 										</td>
 									</tr>
 									<tr class="align-items-center">
+											@can('main_dashboard_access')
 										<td>
 											<input type="number" step="0.01" class="form-control form-control-sm" placeholder="full amount" name="pfa" id="pfa" />
 										</td>
+											@endcan
 										<td class="text-center text-muted">-FA ($)-</td>
 										<td>
 											<input type="number" step="0.01" class="form-control form-control-sm" placeholder="customer full amount" name="cfa" id="cfa" />
@@ -116,7 +125,6 @@
 							</table>
 							<span id="selectedRows"></span>
 							<input type="hidden" name="selectedRows" id="selectedRowsInput">
-
 						</div>
 					</div>
 				</div>

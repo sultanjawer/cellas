@@ -3,6 +3,7 @@
 	@include('partials.subheader')
 	@can('landing_access')
 		<!-- Page Content -->
+		@can('main_dashboard_access')
 		<div class="row d-flex justify-content-between mb-3">
 			<div></div>
 			<div class="col-lg-5">
@@ -71,13 +72,13 @@
 			<div class="col-md-6">
 				<div class="panel" id="panel-1">
 					<div class="panel-hdr">
-						<h2>Balance in Banks</h2>
+						<h2>Balance by Company</h2>
 					</div>
 					<div class="panel-container show">
 						<div class="panel-content">
 							<table class="table table-hover table-sm table-bordered w-100" id="bankBalance">
 								<thead>
-									<th>Bank</th>
+									<th>Company</th>
 									<th>Balance</th>
 								</thead>
 								<tbody>
@@ -86,13 +87,12 @@
 							</table>
 						</div>
 					</div>
-
 				</div>
 			</div>
 			<div class="col-md-6">
 				<div class="panel" id="panel-2">
 					<div class="panel-hdr">
-						<h2>Sales by Company</h2>
+						<h2>Purchase by Company</h2>
 					</div>
 					<div class="panel-container show">
 						<div class="panel-content">
@@ -110,7 +110,28 @@
 
 				</div>
 			</div>
+			<div class="col-md-6">
+				<div class="panel" id="panel-2">
+					<div class="panel-hdr">
+						<h2>Customer in Debts</h2>
+					</div>
+					<div class="panel-container show">
+						<div class="panel-content">
+							<table class="table table-sm table-hover table-bordered w-100" id="debtCustomers">
+								<thead>
+									<th>Customer</th>
+									<th>Balance</th>
+								</thead>
+								<tbody>
+
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
+		@endcan
 		<!-- end Page Content -->
 	@endcan
 @endsection
@@ -125,6 +146,7 @@
 
 			var bankBalanceTable = $('#bankBalance').DataTable(getDataTableConfig([[1, 'desc']]));
 			var salesByCompanyTable = $('#salesByCompany').DataTable(getDataTableConfig([[1, 'asc']]));
+			var debtCustomersTable = $('#debtCustomers').DataTable(getDataTableConfig([[1, 'desc']]));
 
 			fetchInsightByDateRange($('#start_date').val(), $('#end_date').val());
 			$('.dateFilter').on('change', function() {
@@ -153,6 +175,7 @@
 				$('#totalSale').text(formattedOrders);
 				$('#totalProfits').text(formattedProfits);
 
+				//balance by company
 				var bankBalanceTable = $('#bankBalance').DataTable();
 				bankBalanceTable.clear().draw();
 				$.each(data.balanceInBanks, function(bankId, balanceData) {
@@ -166,6 +189,7 @@
 				});
 				bankBalanceTable.draw();
 
+				// sales by company
 				var salesByCompanyTable = $('#salesByCompany').DataTable();
 				salesByCompanyTable.clear().draw();
 				$.each(data.companyOrders, function(companyId, orderData) {
@@ -178,6 +202,19 @@
 					salesByCompanyTable.row.add(row);
 				});
 				salesByCompanyTable.draw();
+
+				//customer in debt
+				var debtCustomersTable = $('#debtCustomers').DataTable();
+				debtCustomersTable.clear().draw();
+
+				$.each(data.debtCustomers, function(index, customer) {
+					var result = customer.result;
+					var row = $('<tr>');
+					$('<td>').html('<a href="{{ route("admin.customer.transactions", ["id" => ":id"]) }}'.replace(':id', customer.id) + '">' + customer.name + '</a>').appendTo(row);
+					$('<td>').addClass('text-right text-danger').text(result).appendTo(row);
+					debtCustomersTable.row.add(row);
+				});
+				debtCustomersTable.order([1, 'asc']).draw();
 			}
 
 			//number formatter
@@ -189,7 +226,7 @@
 			function getDataTableConfig(order) {
 				return {
 				responsive: true,
-				lengthChange: true,
+				lengthChange: false,
 				pageLength: 10,
 				// order: order,
 				dom:

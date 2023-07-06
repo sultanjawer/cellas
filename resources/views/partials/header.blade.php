@@ -178,9 +178,9 @@
 					<span >Fullscreen</span>
 					<i class="float-right text-muted fw-n">F11</i>
 				</a>
-				<a href="{{ route('admin.profile.show') }}" class="dropdown-item">
+				{{-- <a href="{{ route('admin.profile.show') }}" class="dropdown-item">
 					<span data-i18n="drpdwn.profile">Profile</span>
-				</a>
+				</a> --}}
 				{{-- <div class="dropdown-multilevel dropdown-multilevel-left">
 					<div class="dropdown-item" data-i18n="drpdwn.lang">
 						Bahasa

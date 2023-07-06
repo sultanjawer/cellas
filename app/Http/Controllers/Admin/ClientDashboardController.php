@@ -27,22 +27,23 @@ class ClientDashboardController extends Controller
 		return view('admin.dashboard.home', compact('module_name', 'page_title', 'page_heading', 'page_subtitle', 'heading_class', 'page_desc', 'customers'));
 	}
 
-	public function InsightByDateRange(Request $request, $id)
+	public function InsightByDateRange(Request $request)
 	{
-		// Not affected by $request
-		$deposits = Payment::where('customer_id', $id)->where('status', 'checked')->sum('amount');
-		$allOrders = Order::where('customer_id', $id)->get();
+		// only filtered by selectCustomer
+		$client = $request->input('selectCustomer');
+		$deposits = Payment::where('customer_id', $client)->where('status', 'checked')->sum('amount');
+		$allOrders = Order::where('customer_id', $client)->get();
 
 		$all_orders = $allOrders->sum(function ($order) {
-			return (($order->amount + $order->cfa) * $order->sell) + $order->ccharges;
+			return ($order->amount * $order->sell) + ($order->cfa * $order->sell) + $order->ccharges;
 		});
 		$balance = $deposits - $all_orders;
 
-		// By $request
+		//filtered by date range and select customer
 		$startDate = $request->input('start_date');
 		$endDate = $request->input('end_date');
 
-		$query = Order::query()->where('customer_id', $id);
+		$query = Order::query()->where('customer_id', $client);
 		if ($startDate && $endDate) {
 			$formattedStartDate = Carbon::createFromFormat('d/m/Y', $startDate)->startOfDay();
 			$formattedEndDate = Carbon::createFromFormat('d/m/Y', $endDate)->endOfDay();
@@ -50,7 +51,7 @@ class ClientDashboardController extends Controller
 		}
 		$filteredOrders = $query->with('product', 'company')->get();
 		$customerOrders = $filteredOrders->mapToGroups(function ($filteredOrder) {
-			$total = (($filteredOrder->amount + $filteredOrder->cfa) * $filteredOrder->sell) + $filteredOrder->ccharges;
+			$total = (($filteredOrder->amount * $filteredOrder->sell) + ($filteredOrder->cfa * $filteredOrder->sell) + $filteredOrder->ccharges);
 			return [
 				$filteredOrder->company_id => $total,
 			];
@@ -59,7 +60,7 @@ class ClientDashboardController extends Controller
 		});
 
 		$filteredSell = $filteredOrders->sum(function ($order) {
-			return (($order->amount + $order->cfa) * $order->sell) + $order->ccharges;
+			return (($order->amount * $order->sell) + ($order->cfa * $order->sell) + $order->ccharges);
 		});
 
 		$data = [

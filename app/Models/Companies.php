@@ -32,4 +32,9 @@ class Companies extends Model
 	{
 		return $this->hasMany(Order::class, 'company_id', 'id');
 	}
+
+	public function payment()
+	{
+		return $this->hasMany(Payment::class, 'company_id');
+	}
 }

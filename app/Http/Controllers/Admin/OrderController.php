@@ -88,13 +88,6 @@ class OrderController extends Controller
 		return view('admin.order.create', compact('module_name', 'page_title', 'page_subtitle', 'page_heading', 'heading_class', 'page_desc', 'customers'));
 	}
 
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @return \Illuminate\Http\Response
-	 */
-
 	public function store(Request $request)
 	{
 		try {
@@ -120,12 +113,17 @@ class OrderController extends Controller
 
 			$selectedBankIDs = explode(',', $request->input('selectedRows')); // Split the comma-separated string into an array of selected bank IDs
 
+			$selectedBanks = [];
 			foreach ($selectedBankIDs as $bankID) {
-				$selectedBanks = new DesignateBank();
-				$selectedBanks->order_id = $orderID;
-				$selectedBanks->bank_id = $bankID;
-				$selectedBanks->save();
+				$selectedBanks[] = [
+					'order_id' => $orderID,
+					'bank_id' => $bankID,
+					'created_at' => now(), // Or any timestamp value you prefer
+					'updated_at' => now(), // Or any timestamp value you prefer
+				];
 			}
+			// dd($selectedBanks);
+			DesignateBank::insert($selectedBanks);
 
 			DB::commit(); // Commit the transaction
 
@@ -138,6 +136,58 @@ class OrderController extends Controller
 			return redirect()->back()->with('error', 'Failed to create order. Please try again.');
 		}
 	}
+
+
+	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 * @return \Illuminate\Http\Response
+	 */
+
+	// public function store(Request $request)
+	// {
+	// 	try {
+	// 		DB::beginTransaction();
+
+	// 		$order = new Order();
+
+	// 		// Populate order attributes
+	// 		$order->customer_id = $request->input('customer_id');
+	// 		$order->product_id = $request->input('product_id');
+	// 		$order->company_id = $request->input('company_id');
+	// 		$order->amount = $request->input('amount');
+	// 		$order->buy = $request->input('buy');
+	// 		$order->sell = $request->input('sell');
+	// 		$order->pcharges = $request->input('pcharges');
+	// 		$order->ccharges = $request->input('ccharges');
+	// 		$order->pfa = $request->input('pfa');
+	// 		$order->cfa = $request->input('cfa');
+
+	// 		$order->save(); // Save the order to generate the ID
+
+	// 		$orderID = $order->id; // Retrieve the generated order ID
+
+	// 		$selectedBankIDs = explode(',', $request->input('selectedRows')); // Split the comma-separated string into an array of selected bank IDs
+
+	// 		foreach ($selectedBankIDs as $bankID) {
+	// 			$selectedBanks = new DesignateBank();
+	// 			$selectedBanks->order_id = $orderID;
+	// 			$selectedBanks->bank_id = $bankID;
+	// 			$selectedBanks->save();
+	// 		}
+
+	// 		DB::commit(); // Commit the transaction
+
+	// 		session()->flash('message', trans('global.create_success'));
+	// 		return redirect()->back()->with('success', 'Order created successfully!');
+	// 	} catch (\Exception $e) {
+	// 		DB::rollback(); // Rollback the transaction in case of any exception
+
+	// 		// Handle the exception as needed
+	// 		return redirect()->back()->with('error', 'Failed to create order. Please try again.');
+	// 	}
+	// }
 
 
 	/**

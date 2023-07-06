@@ -134,10 +134,13 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 	Route::put('payment/{id}/setstatus', 'PaymentController@setStatus')->name('payment.setStatus');
 	Route::put('payment/{id}/setValidation', 'PaymentController@setValidation')->name('payment.setValidation');
 
+	//new method
+	Route::post('payment/bulkstore', 'PaymentController@bulkstore')->name('payment.bulkstore');
+
 	// report
 	//new in cellas
 	Route::get('report/orders/customerOrderByDate', 'ReportDataController@customerOrderByDate')->name('report.orders.customerOrderByDate');
-	Route::get('report/insightByDateRange/{id}', 'ClientDashboardController@InsightByDateRange')->name('report.customerDashboard');
+	Route::get('report/insightByDateRange/client', 'ClientDashboardController@InsightByDateRange')->name('report.customerDashboard');
 
 	//old
 	Route::get('report/orders/data', 'ReportDataController@transactsData')->name('report.orders.data');
@@ -145,7 +148,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 	Route::get('report/orders/byDateRangeByBank', 'ReportDataController@byDateRangeByBank')->name('report.orders.byDateRangeByBank');
 	Route::get('report/deposits/data', 'ReportDataController@depositsData')->name('report.deposits.data');
 	Route::get('report/deposits', 'ReportController@deposit')->name('report.deposits');
-	Route::get('report/insightByDateRange', 'ReportDataController@InsightByDateRange')->name('report.insightByDateRange');
+	Route::get('report/insightByDateRange', 'ReportDataController@InsightByDateRange')->name('report.insightByDateRange'); //will be removed
+
 
 	//user task
 	Route::group(['prefix' => 'task', 'as' => 'task.'], function () {

@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\Payment;
 use App\Models\Customer;
 use App\Models\Product;
 use App\Models\Bank;
 use App\Models\Companies;
+use App\Models\PaymentGhost;
+use Svg\Tag\Rect;
 
 class PaymentController extends Controller
 {
@@ -45,7 +48,18 @@ class PaymentController extends Controller
 	 */
 	public function create()
 	{
-		//
+		$module_name = 'Deposits & Payments';
+		$page_title = 'Create Deposits';
+		$page_subtitle = '& Payments';
+		$page_heading = 'Create Depostis & Payments';
+		$heading_class = 'fal fa-money-check';
+		$page_desc = 'Here You can create Customer Deposits/Payments or Cash In-out';
+
+		$customers = Customer::all();
+		$banks = Bank::all();
+		$companies = Companies::all();
+
+		return view('admin.payment.create', compact('module_name', 'page_title', 'page_subtitle', 'page_heading', 'heading_class', 'page_desc', 'customers', 'banks', 'companies'));
 	}
 
 	/**
@@ -70,6 +84,54 @@ class PaymentController extends Controller
 
 		return redirect()->back()->with('success', 'Order created successfully!');
 	}
+
+	public function bulkstore(Request $request)
+	{
+		$request->validate([
+			'customer_id' => 'required',
+			'slip_date' => 'required',
+			'amount' => 'required|array',
+			'bank_id' => 'required|array',
+			'company_id' => 'required|array',
+			'amount.*' => 'required',
+			'bank_id.*' => 'required',
+			'company_id.*' => 'required',
+		]);
+
+		$amounts = $request->input('amount');
+		$bank_ids = $request->input('bank_id');
+		$company_ids = $request->input('company_id');
+
+		try {
+			for ($i = 0; $i < count($amounts); $i++) {
+				$payment = new Payment();
+				$payment->customer_id = $request->input('customer_id');
+				$payment->slip_date = $request->input('slip_date');
+				$payment->amount = $amounts[$i];
+				$payment->bank_id = $bank_ids[$i];
+				$payment->company_id = $company_ids[$i];
+				$payment->save();
+			}
+
+			// Flash the success message to the session
+			session()->flash('message', trans('global.create_success'));
+
+			// Redirect to a specific route
+			return redirect()->route('admin.payments.index');
+		} catch (\Exception $e) {
+			// Flash an error message to the session
+			session()->flash('error', trans('global.create_failed'));
+
+			// Redirect to a specific route
+			return redirect()->route('admin.payments.index');
+		}
+	}
+
+
+
+
+
+
 
 	/**
 	 * Display the specified resource.

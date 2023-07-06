@@ -9,7 +9,7 @@
 		<div class="col-lg-4">
 			<div class="form-group">
 				<div class="input-group" id="">
-					<select class="form-control form-control-sm" name="selectCustomer" id="selectCustomer">
+					<select class="form-control form-control-sm dateFilter" name="selectCustomer" id="selectCustomer">
 						@foreach ($customers as $customer)
 							<option value="{{$customer->id}}">{{$customer->name}}</option>
 						@endforeach
@@ -97,20 +97,18 @@
 			autoclose: true
 		});
 
-		var debtCustomersTable = $('#debtCustomers').DataTable(getDataTableConfig([[1, 'desc']]));
 		var ordersTable = $('#Tableorders').DataTable(getDataTableConfig([[1, 'asc']]));
 
-		fetchInsightByDateRange($('#start_date').val(), $('#end_date').val());
+		fetchInsightByDateRange($('#selectCustomer').val(), $('#start_date').val(), $('#end_date').val());
 
 		$('.dateFilter').on('change', function() {
-			fetchInsightByDateRange($('#start_date').val(), $('#end_date').val());
+			fetchInsightByDateRange($('#selectCustomer').val(), $('#start_date').val(), $('#end_date').val());
 		});
 
-		function fetchInsightByDateRange(startDate, endDate) {
+		function fetchInsightByDateRange(client, startDate, endDate) {
 			var id = $('#selectCustomer').val(); // Get the selected ID value
-			var url = '{{ route("admin.report.customerDashboard", "id") }}';
-			url = url.replace('id', encodeURIComponent(id)); // Replace the placeholder with the ID
-			$.get(url, { start_date: startDate, end_date: endDate })
+			var url = '{{ route("admin.report.customerDashboard") }}';
+			$.get(url, { selectCustomer: client, start_date: startDate, end_date: endDate })
 			.done(function(data) {
 				displayInsight(data);
 			})

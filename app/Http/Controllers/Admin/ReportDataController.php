@@ -50,6 +50,7 @@ class ReportDataController extends Controller
 	{
 		//data filter
 		$startDate = $request->input('start_date');
+		$endDate = $request->input('end_date');
 		$filterCustomer = $request->input('customerFilter');
 		$filterCompany = $request->input('Company_Filter');
 		$filterAccount = $request->input('Account_Filter');
@@ -58,9 +59,10 @@ class ReportDataController extends Controller
 
 		$query = Payment::query();
 
-		if ($startDate) {
+		if ($startDate && $endDate) {
 			$formattedStartDate = Carbon::createFromFormat('d/m/Y', $startDate)->startOfDay();
-			$query->whereDate('created_at', $formattedStartDate);
+			$formattedEndDate = Carbon::createFromFormat('d/m/Y', $endDate)->endOfDay();
+			$query->whereBetween('created_at', [$formattedStartDate, $formattedEndDate]);
 		}
 		if ($filterCustomer) {
 			$query->where('customer_id', $filterCustomer);
@@ -115,7 +117,7 @@ class ReportDataController extends Controller
 
 		$orders = $query->with('customer')->with('company')->with('product')->get();
 		$totalSell = $orders->sum(function ($order) {
-			return ($order->amount + $order->cfa) * $order->sell + $order->ccharges;
+			return ($order->amount * $order->sell) + ($order->cfa * $order->sell) + $order->ccharges;
 		});
 		$totalFiltered  = $totalSell;
 		$data = [
@@ -162,20 +164,34 @@ class ReportDataController extends Controller
 	public function InsightByDateRange(Request $request)
 	{
 		//not affected by $request
-		$payments = Payment::where('validation', 'validated')->with('bank')->get();
+		$payments = Payment::where('validation', 'validated')->with('company')->get();
 		$deposits = $payments->sum('amount');
 		$balance = $deposits;
 
-		$balanceInBanks = $payments->groupBy('bank_id')->map(function ($balances) {
-			$bank = $balances->first()->bank;
-			$bankName = $bank->bank_name;
-			$account = $bank->account;
-			$combined = $bankName . ' - ' . $account;
+		$balanceInBanks = $payments->groupBy('company_id')->map(function ($balances) {
+			$bank = $balances->first()->company;
+			$bankName = $bank->company_name;
+			$combined = $bankName;
 
 			return [
 				'bank_name' => $combined,
 				'balance' => $balances->sum('amount')
 			];
+		});
+		$customers = Customer::with(['payment', 'order'])->get();
+		$debtCustomers = $customers->filter(function ($customer) {
+			$paymentTotal = $customer->payment->sum('amount');
+			$orderTotal = $customer->order->sum(function ($order) {
+				return (($order->amount + $order->cfa) * $order->sell) + $order->ccharges;
+			});
+
+			$result = $paymentTotal - $orderTotal;
+
+			$customer->cashIn = number_format($paymentTotal, 2, '.', ',');
+			$customer->cashOut = number_format($orderTotal, 2, '.', ',');
+			$customer->result = number_format($result, 2, '.', ',');
+
+			return $result < 0;
 		});
 
 		//by $requests
@@ -193,9 +209,13 @@ class ReportDataController extends Controller
 		$orders = $query->with('company', 'customer', 'product')->get();
 
 		$companyOrders = $orders->groupBy('company_id')->map(function ($orders) {
+			$purchaseTotal = $orders->sum(function ($order) {
+				return (($order->amount + $order->pfa) * $order->buy) + $order->pcharges;
+			});
+
 			return [
 				'company_name' => $orders->first()->company->company_name,
-				'total_amount' => $orders->sum('amount')
+				'total_amount' => $purchaseTotal
 			];
 		});
 
@@ -204,7 +224,7 @@ class ReportDataController extends Controller
 		});
 
 		$totalSale = $orders->sum(function ($order) {
-			return (($order->amount + $order->cfa) * $order->sell) + $order->ccharge;
+			return ($order->amount * $order->sell) + ($order->cfa * $order->sell) + $order->ccharges;
 		});
 
 		$totalProfits = $totalSale - $totalPurchase;
@@ -216,6 +236,7 @@ class ReportDataController extends Controller
 			'totalProfits'		=> $totalProfits,
 			'balanceInBanks'	=> $balanceInBanks,
 			'companyOrders'		=> $companyOrders,
+			'debtCustomers'		=> $debtCustomers,
 		];
 		// dd($data);
 		return response()->json($data);

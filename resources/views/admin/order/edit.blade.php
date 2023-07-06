@@ -63,33 +63,41 @@
 							<div class="panel-content">
 								<table class="table table-sm table-bordered table-hover w-100">
 									<thead class="text-muted text-center">
+										@can('main_dashboard_access')
 										<th>Purchased</th>
+										@endcan
 										<th>Desc</th>
 										<th>Sell</th>
 									</thead>
 									<tbody>
 										<tr class="align-items-center">
+											@can('main_dashboard_access')
 											<td>
 												<input type="number" step="0.01" class="form-control form-control-sm" placeholder="purchased rates" name="buy" id="buy" value="{{old('buy', $order->buy)}}" />
 											</td>
+											@endcan
 											<td class="text-center text-muted">-Rates (Rp)-</td>
 											<td>
 												<input type="number" step="0.01" class="form-control form-control-sm" placeholder="sell rates" name="sell" id="sell" value="{{old('sell', $order->sell)}}" />
 											</td>
 										</tr>
 										<tr class="align-items-center">
+											@can('main_dashboard_access')
 											<td>
 												<input type="number" step="0.01" class="form-control form-control-sm" placeholder="purchased charges" name="pcharges" id="pcharges"  value="{{old('pcharges', $order->pcharges)}}" />
 											</td>
+											@endcan
 											<td class="text-center text-muted">-Charges (Rp)-</td>
 											<td>
 												<input type="number" step="0.01" class="form-control form-control-sm" placeholder="customer charges" name="ccharges" id="ccharges"  value="{{old('ccharges', $order->ccharges)}}" />
 											</td>
 										</tr>
 										<tr class="align-items-center">
+											@can('main_dashboard_access')
 											<td>
 												<input type="number" step="0.01" class="form-control form-control-sm" placeholder="full amount" name="pfa" id="pfa" value="{{old('pfa', $order->pfa)}}" />
 											</td>
+											@endcan
 											<td class="text-center text-muted">-FA ($)-</td>
 											<td>
 												<input type="number" step="0.01" class="form-control form-control-sm" placeholder="customer full amount" name="cfa" id="cfa" value="{{old('cfa', $order->cfa)}}" />

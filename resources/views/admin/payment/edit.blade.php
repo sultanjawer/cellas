@@ -1,7 +1,6 @@
 @extends('layouts.admin')
 @section('content')
 	@include('partials.subheader')
-	@include('partials.sysalert')
 	@can('payment_edit')
 		<div class="row">
 			<div class="col-12">
